@@ -20,6 +20,53 @@ import {
   Send,
   Loader2,
 } from "lucide-react";
+import { useEffect } from "react";
+
+/** Minimalist confetti burst — small colored dots that fall and fade */
+function Confetti({ onDone }: { onDone: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(onDone, 2500);
+    return () => clearTimeout(timer);
+  }, [onDone]);
+
+  const particles = Array.from({ length: 30 }, (_, i) => {
+    const colors = ["#e8464c", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
+    const color = colors[i % colors.length];
+    const left = 40 + Math.random() * 20;
+    const delay = Math.random() * 0.4;
+    const xDrift = (Math.random() - 0.5) * 200;
+    const size = 4 + Math.random() * 4;
+    const duration = 1.2 + Math.random() * 0.8;
+    return { color, left, delay, xDrift, size, duration, id: i };
+  });
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+      {particles.map((p) => (
+        <span
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            left: `${p.left}%`,
+            top: "50%",
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            animation: `confetti-fall ${p.duration}s ease-out ${p.delay}s forwards`,
+            // @ts-expect-error CSS custom properties
+            "--x-drift": `${p.xDrift}px`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes confetti-fall {
+          0% { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+          100% { opacity: 0; transform: translateY(300px) translateX(var(--x-drift)) scale(0.3) rotate(720deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 const STEPS = [
   { label: "Trip Basics", icon: MapPin },
@@ -78,14 +125,15 @@ export default function BuildPage() {
   // Form state
   const [destinationId, setDestinationId] = useState<number>(0);
   const [tripType, setTripType] = useState<string>("group");
-  const [travelStyle, setTravelStyle] = useState<string>("");
+  const [travelStyle, setTravelStyle] = useState<string>("friends");
   const [travelers, setTravelers] = useState(2);
   const [rooms, setRooms] = useState(1);
   const [adultsPerRoom, setAdultsPerRoom] = useState(2);
-  const [interests, setInterests] = useState<string[]>([]);
+  const [interests, setInterests] = useState<string[]>(["leisure"]);
   const [durationRange, setDurationRange] = useState<string>("");
   const [departureDate, setDepartureDate] = useState("");
-  const [flexible, setFlexible] = useState(false);
+  const [flexible, setFlexible] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -131,7 +179,21 @@ export default function BuildPage() {
       </nav>
 
       <div className="max-w-xl mx-auto px-6 pt-10 pb-20">
-        {/* Progress */}
+        {/* Progress bar — starts at 25%, fills to 100% by step 4 */}
+        <div className="mb-8">
+          <div className="flex justify-between text-xs text-neutral-400 mb-1.5">
+            <span>Step {step + 1} of 5</span>
+            <span>{Math.round(25 + step * 18.75)}%</span>
+          </div>
+          <div className="h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-brand-500 transition-all duration-500 ease-out"
+              style={{ width: `${25 + step * 18.75}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Stepper */}
         <div className="flex items-center gap-1 mb-10">
           {STEPS.map((s, i) => (
             <div key={s.label} className="flex items-center flex-1">
@@ -548,7 +610,7 @@ export default function BuildPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={!canProceed() || isSubmitting}>
+              <Button type="submit" disabled={!canProceed() || isSubmitting} onClick={() => setShowConfetti(true)}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -565,6 +627,9 @@ export default function BuildPage() {
           </div>
         </Form>
       </div>
+
+      {/* Party popper confetti */}
+      {showConfetti && <Confetti onDone={() => setShowConfetti(false)} />}
     </div>
   );
 }

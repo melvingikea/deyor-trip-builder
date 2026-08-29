@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 export function TravelBackground() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden opacity-20"
+      className="pointer-events-none absolute inset-0 overflow-hidden opacity-20"
       aria-hidden="true"
     >
       <svg

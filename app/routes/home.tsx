@@ -38,7 +38,7 @@ export default function Home() {
     <div className="min-h-screen bg-white relative">
       <TravelBackground />
       {/* Nav */}
-      <nav className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
+      <nav className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm relative z-10">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" aria-label="Deyor home">
             <img
@@ -54,7 +54,7 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <main className="max-w-2xl mx-auto px-6 pt-24 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pt-24 pb-16 relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-50 border border-accent-400/30 text-accent-600 text-xs font-medium mb-6">
           <span>✦</span> Community-led experiential travel
         </div>
@@ -112,7 +112,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-neutral-100">
+      <footer className="border-t border-neutral-100 relative z-10">
         <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-neutral-400">
           Deyor — Community-led experiential travel
         </div>

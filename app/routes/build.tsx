@@ -129,7 +129,7 @@ export default function BuildPage() {
   const [travelers, setTravelers] = useState(2);
   const [rooms, setRooms] = useState(1);
   const [adultsPerRoom, setAdultsPerRoom] = useState(2);
-  const [interests, setInterests] = useState<string[]>(["leisure"]);
+  const [interests, setInterests] = useState<string[]>(["leisure", "attractions"]);
   const [durationRange, setDurationRange] = useState<string>("");
   const [departureDate, setDepartureDate] = useState("");
   const [flexible, setFlexible] = useState(true);

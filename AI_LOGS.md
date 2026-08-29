@@ -27,7 +27,7 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - Applied Resend-style minimalistic design: neutral palette, generous whitespace, clean typography
 
 ### 3. Core Logic Implementation
-- `destinations.ts`: 5 destinations (Bali, Coorg, Goa, Manali, Jaipur) with tagged activities
+- `destinations.ts`: 3 destinations (Bali, Coorg, Goa) with tagged activities
 - `itinerary.ts`: Generation algorithm with interest filtering, round-robin distribution, anti-repetition, cost calculation
 - `validation.ts`: Server-side validation for all wizard inputs
 - `store.ts`: KV-backed persistence with in-memory dev fallback
@@ -159,3 +159,61 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **What happened:** `Cannot find module '~/components/ui/button'` at runtime
 - **Root cause:** Missing `tsconfigPaths` in vite.config.ts `resolve` option
 - **Fix:** Added `resolve: { tsconfigPaths: true }` to vite config
+
+### 14. Official Deyor Logo for PDF
+- **User reported:** PDF logo wasn't the real Deyor logo
+- Downloaded official white logo from `deyor.in` (`deyor_white_logo_png.png` via CDN)
+- Re-encoded as base64 and replaced the old embedded logo in itinerary.tsx
+- Also updated `public/deyor-logo-white.png` with the official version
+
+### 15. Homepage Redesign — Travel-First, Not SaaS
+- **User reported:** homepage was bland with no animation/SVG
+- Added animated gradient blobs (red/amber), dotted travel route path with airplane, location pins, clouds, compass, mountains, sun — all subtle with framer-motion
+- Added 6 feature cards in a 3×2 grid with staggered entrance animations
+- Centered hero with fade-up animations on badge, heading, subtitle, CTA
+- **User corrected:** feature cards looked like a SaaS website, not a travel website
+- Replaced SaaS-style icon+title+desc cards with:
+  - **Destination cards** showing real Unsplash photos, taglines, and actual activity names from destinations data
+  - **Experience type pills** (Adventure 🧗, Leisure 🌴, Culture 🏛️, Attractions 📸)
+  - **"How it works"** numbered flow (01–05) describing the travel planning journey
+  - Second CTA at bottom
+
+### 16. Destination Images
+- Downloaded real photos from Unsplash for each destination (Bali, Coorg, Goa)
+- Cards show photo with gradient overlay, price badge, destination name, tagline, and 3 sample activities pulled directly from `destinations.ts`
+- **User corrected:** activity names on cards were hardcoded/invented — changed to pull directly from `dest.activities.slice(0, 3)`
+
+### 17. Build Page — Progress Bar, Defaults & Confetti
+- **User requested:** minimalist progress bar starting at 25%
+- Added thin progress bar above stepper: shows "Step X of 5" with percentage (25% → 100%), smooth CSS transition
+- **User requested:** auto-select Friends travel style, Leisure + Attractions interests, "I'm flexible with dates"
+- Set defaults: `travelStyle="friends"`, `interests=["leisure", "attractions"]`, `flexible=true`
+- **User requested:** party popper celebration on generating itinerary
+- Initially added custom CSS confetti in build.tsx — didn't work well
+- **User corrected:** confetti should be on itinerary page, not build page
+- Moved to itinerary.tsx, fires on page load
+- **User corrected:** use `react-confetti` npm package instead of custom
+- Installed `react-confetti`, replaced custom implementation
+- **User corrected:** confetti pieces too big → reduced count to 150, gentler gravity
+- **User corrected:** confetti only on left side → SSR was using hardcoded 1200px width; added client-side `useEffect` to measure actual `window.innerWidth/innerHeight` with resize listener
+
+### 18. Destination Auto-Select from Homepage
+- **User requested:** clicking a destination card on homepage should auto-select that destination on the build page
+- Homepage cards now link to `/build?destination={id}` instead of `/build`
+- Build page reads `useSearchParams().get("destination")` to set initial `destinationId`
+
+### 19. Data Compliance — Spec-Only Destinations
+- **User corrected:** use only the 3 destinations from the spec (Bali, Coorg, Goa), not 5
+- Removed Manali and Jaipur from `destinations.ts`, homepage vibes, and deleted their images
+- Updated README to say "3 destinations"
+
+## Additional Course Corrections by Me
+
+- **Don't add more activities:** User explicitly said not to add more activities to fix the repetition bug — fix the distribution algorithm instead, don't expand the dataset
+- **ASCII surfer rejected:** Added ASCII surfer animation to homepage — user said remove it, add something else
+- **Confetti location:** Initially added confetti to build page on button click — user said it should be on the itinerary page so it's visible after generation
+- **Confetti library:** Custom CSS confetti was too big/broken — user directed to use `react-confetti` package
+- **SaaS → Travel design:** Feature cards with icons looked like a SaaS landing page — user corrected to make it look like a travel website with real destination photos
+- **Hardcoded activity names:** Homepage cards had invented activity names that didn't match `destinations.ts` — user corrected to use only actual data
+- **3 destinations only:** Had expanded to 5 destinations (added Manali, Jaipur) — user corrected to stick to the 3 in the spec
+

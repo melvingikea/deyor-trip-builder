@@ -46,6 +46,35 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 ### 6. Tests
 - 6 Vitest tests covering: interest filtering, no empty days, cost calculation, anti-repetition, validation accept/reject
 
+### 7. Cloudflare Deployment Debugging
+- Initial deploy with `"assets": { "directory": "./build/client" }` in wrangler.jsonc → 404 in production
+- Tried adding `"main": "./build/server/index.js"` → wrangler error: no default export, fell back to service-worker format, failed on Node.js imports
+- Created hand-rolled `build/worker-entry.js` wrapper using `createRequestHandler` from `react-router` → 500: "Invalid context value"
+- Switched to `createRequestHandler` from `@react-router/cloudflare` → 500: "Cannot read properties of undefined (reading 'bind')"
+- **User intervened:** told me to use `npm create cloudflare@latest -- --framework=react-router`
+- Scaffolded reference project, compared configs, found the correct pattern: no `assets` field, `workers/app.ts` entry with `ExportedHandler`, `cloudflare:workers` module for env
+- Deploy succeeded → HTTP 200 on production, full wizard flow working end-to-end
+
+### 8. Deyor Branding — Logo, Favicon, SEO
+- **User intervened:** told me to grab logo and favicon from deyor.in and make pages SEO-ready
+- Extracted from deyor.in: white logo PNG (`deyor_white_logo_png.png`), favicon SVG, favicon PNG (48×48), apple-touch-icon
+- Replaced plain text "deyor" nav with `<img>` using `brightness-0` CSS filter to render white logo as black
+- Added to `root.tsx`: favicon links (SVG + PNG + apple-touch-icon), theme-color meta
+- Added per-route SEO meta:
+  - Home: full Open Graph (type, title, description, url, site_name, image) + Twitter Card + robots
+  - Build: title + description + robots
+  - Itinerary: dynamic title with destination name, description, `noindex` (ephemeral pages)
+
+### 9. Color Palette — Travel Theme
+- **User intervened:** pointed out travel sites use blue/white/warm accents, not all-gray
+- Defined `brand-*` (blue) and `accent-*` (amber) CSS custom properties in `app.css`
+- Updated all interactive states: buttons, selection cards, progress dots, day circles, overview pills, cost summary
+- Added `accent` button variant
+- **User corrected again:** Deyor uses red, not blue
+- Extracted primary color from deyor.in CSS: `--vl-theme-primary: rgb(232, 70, 76)`
+- Swapped entire brand palette to red (#E8464C family), kept amber accents
+- Updated theme-color meta to `#e8464c`
+
 ## Bugs Encountered & Fixed
 
 ### Bug 1: jsPDF SSR Build Failure

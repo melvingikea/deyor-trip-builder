@@ -48,10 +48,18 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
   const { destination, days, input, totalNights, accommodationCost, activityCostEstimate, totalCost } = itinerary;
   const [generating, setGenerating] = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
+  const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 });
 
   useEffect(() => {
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const update = () => setWindowSize({ w: window.innerWidth, h: window.innerHeight });
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   const handleDownloadPDF = async () => {
@@ -265,12 +273,12 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
           recycle={false}
           colors={["#e8464c", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#fbbf24"]}
           gravity={0.25}
-          confettiSource={{ x: 0, y: 0, w: typeof window !== "undefined" ? window.innerWidth : 1200, h: 0 }}
+          confettiSource={{ x: 0, y: 0, w: windowSize.w, h: 0 }}
           initialVelocityX={4}
           initialVelocityY={15}
           tweenDuration={100}
-          width={typeof window !== "undefined" ? window.innerWidth : 1200}
-          height={typeof window !== "undefined" ? window.innerHeight : 800}
+          width={windowSize.w}
+          height={windowSize.h}
           onConfettiComplete={() => setShowConfetti(false)}
           style={{ position: "fixed", top: 0, left: 0, zIndex: 50, pointerEvents: "none" }}
         />

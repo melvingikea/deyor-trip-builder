@@ -84,6 +84,11 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **User reported:** Input labels too close to input fields on the build page, "feels cheap"
 - Fix: added `mb-2 block` to the Label component for consistent spacing between labels and their inputs across all steps
 
+- **User requested:** Minimalist animated SVG travel background on home page using Framer Motion
+- Added `TravelBackground` component with animated: dotted route paths, clouds, airplane flying along the route, map pins, compass, and scattered waypoints
+- All elements at low opacity (10-20%) so they don't compete with content
+- Nav gets `bg-white/80 backdrop-blur-sm` for a frosted glass effect over the background
+
 ## Bugs Encountered & Fixed
 
 ### Bug 1: jsPDF SSR Build Failure

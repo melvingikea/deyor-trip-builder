@@ -46,6 +46,15 @@ const interestEmoji: Record<string, string> = {
 export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
   const { itinerary } = loaderData;
   const { destination, days, input, totalNights, accommodationCost, activityCostEstimate, totalCost } = itinerary;
+
+  // Map destination to its hero image
+  const destImageMap: Record<string, string> = {
+    "Bali, Indonesia": "/dest-bali.jpg",
+    "Coorg, Karnataka": "/dest-coorg.jpg",
+    "Goa": "/dest-goa.jpg",
+  };
+  const destImage = destImageMap[destination.name] ?? null;
+
   const [generating, setGenerating] = useState(false);
   const [showConfetti, setShowConfetti] = useState(true);
   const [windowSize, setWindowSize] = useState({ w: 1200, h: 800 });
@@ -265,7 +274,7 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-b from-brand-50/40 via-white to-white">
       {/* Confetti celebration */}
       {showConfetti && (
         <Confetti
@@ -283,8 +292,9 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
           style={{ position: "fixed", top: 0, left: 0, zIndex: 50, pointerEvents: "none" }}
         />
       )}
+
       {/* Nav */}
-      <nav className="border-b border-neutral-100">
+      <nav className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" aria-label="Deyor home">
             <img
@@ -303,83 +313,122 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
         </div>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-6 pt-10 pb-20">
-        {/* Header */}
-        <div className="mb-10">
+      {/* Hero destination header */}
+      <div className="relative overflow-hidden">
+        {/* Destination image */}
+        {destImage && (
+          <div className="absolute inset-0">
+            <img
+              src={destImage}
+              alt={destination.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
+          </div>
+        )}
+        {/* Fallback gradient if no image */}
+        {!destImage && (
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-500 to-amber-500" />
+        )}
+
+        <div className="relative max-w-2xl mx-auto px-6 py-16 text-white">
           <Link
             to="/build"
-            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 mb-4"
+            className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Build another trip
           </Link>
-          <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">
+
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight drop-shadow-lg">
             {destination.name}
           </h1>
-          <p className="text-neutral-500 mt-1 text-sm">
-            Your personalized {totalNights}-night itinerary
+          <p className="text-white/80 mt-3 text-lg">
+            Your {totalNights}-night {input.travelStyle} adventure awaits ✨
           </p>
-        </div>
 
-        {/* Trip overview */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
-          {[
-            { icon: Calendar, label: `${totalNights} nights` },
-            { icon: Users, label: `${input.travelers} travelers` },
-            { icon: MapPin, label: input.travelStyle },
-            { icon: IndianRupee, label: `₹${totalCost.toLocaleString()}` },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-brand-100 bg-brand-50 text-sm"
+          {/* Quick stats */}
+          <div className="flex flex-wrap gap-3 mt-6">
+            {[
+              { icon: Calendar, label: `${totalNights} nights` },
+              { icon: Users, label: `${input.travelers} travelers` },
+              { icon: MapPin, label: input.travelStyle },
+              { icon: IndianRupee, label: `₹${totalCost.toLocaleString()}` },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 backdrop-blur-sm text-sm text-white border border-white/20"
+              >
+                <item.icon className="h-3.5 w-3.5" />
+                <span className="capitalize">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-6 pb-20">
+        {/* Interest pills */}
+        <div className="flex flex-wrap gap-2 -mt-5 relative z-10 mb-8">
+          {input.interests.map((interest: string) => (
+            <span
+              key={interest}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white shadow-md border border-neutral-100 text-sm font-medium text-neutral-700"
             >
-              <item.icon className="h-4 w-4 text-brand-500" />
-              <span className="text-neutral-700 capitalize">{item.label}</span>
-            </div>
+              <span>{interestEmoji[interest] ?? "•"}</span>
+              <span className="capitalize">{interest}</span>
+            </span>
           ))}
         </div>
 
-        {/* Day-by-day */}
-        <div className="space-y-1">
-          {days.map((day: { day: number; activities: { name: string; interest: string }[] }) => (
-            <div
-              key={day.day}
-              className="border border-neutral-100 rounded-xl px-5 py-4"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <span className="h-7 w-7 rounded-full bg-brand-600 text-white text-xs font-medium flex items-center justify-center">
-                  {day.day}
-                </span>
-                <span className="text-sm font-semibold text-neutral-900">
-                  Day {day.day}
-                </span>
-              </div>
-              <div className="space-y-2 ml-10">
-                {day.activities.map((activity: { name: string; interest: string }, i: number) => (
-                  <div key={i} className="flex items-start gap-2 text-sm">
-                    <span className="mt-0.5">{interestEmoji[activity.interest] ?? "•"}</span>
-                    <div>
-                      <span className="text-neutral-700">{activity.name}</span>
-                      <span className="ml-2 text-xs text-brand-400 capitalize italic">
-                        {activity.interest}
-                      </span>
-                    </div>
+        {/* Day-by-day timeline */}
+        <div className="relative">
+          {/* Vertical timeline line */}
+          <div className="absolute left-[17px] top-4 bottom-4 w-px bg-gradient-to-b from-brand-300 via-brand-200 to-transparent" />
+
+          <div className="space-y-0">
+            {days.map((day: { day: number; activities: { name: string; interest: string }[] }) => (
+              <div key={day.day} className="relative pl-12 pb-8 group">
+                {/* Timeline dot */}
+                <div className="absolute left-0 top-1">
+                  <div className="h-9 w-9 rounded-full bg-brand-500 text-white text-sm font-bold flex items-center justify-center shadow-lg shadow-brand-200/50 ring-4 ring-white">
+                    {day.day}
                   </div>
-                ))}
+                </div>
+
+                <div className="bg-white rounded-2xl border border-neutral-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-base font-semibold text-neutral-900 mb-3">
+                    Day {day.day}
+                  </h3>
+                  <div className="space-y-2.5">
+                    {day.activities.map((activity: { name: string; interest: string }, i: number) => (
+                      <div key={i} className="flex items-start gap-3">
+                        <span className="text-lg mt-0.5 shrink-0">{interestEmoji[activity.interest] ?? "•"}</span>
+                        <div className="flex-1">
+                          <span className="text-sm text-neutral-800">{activity.name}</span>
+                          <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-brand-50 text-brand-600 capitalize">
+                            {activity.interest}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Cost breakdown */}
-        <div className="mt-10 rounded-xl border border-neutral-200 overflow-hidden">
-          <div className="px-5 py-3 bg-neutral-50 border-b border-neutral-200">
-            <h3 className="text-sm font-semibold text-neutral-900">
+        <div className="mt-6 rounded-2xl border border-neutral-200 overflow-hidden bg-white shadow-sm">
+          <div className="px-5 py-4 bg-gradient-to-r from-brand-500 to-brand-600">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <IndianRupee className="h-4 w-4" />
               Cost Estimate
             </h3>
           </div>
           <div className="divide-y divide-neutral-100">
-            <div className="flex justify-between px-5 py-3 text-sm">
+            <div className="flex justify-between px-5 py-3.5 text-sm">
               <span className="text-neutral-500">
                 Accommodation ({totalNights} nights × {input.rooms} room(s) × ₹{destination.pricePerNight.toLocaleString()})
               </span>
@@ -387,7 +436,7 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
                 ₹{accommodationCost.toLocaleString()}
               </span>
             </div>
-            <div className="flex justify-between px-5 py-3 text-sm">
+            <div className="flex justify-between px-5 py-3.5 text-sm">
               <span className="text-neutral-500">
                 Activities estimate ({input.travelers} travelers)
               </span>
@@ -395,18 +444,42 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
                 ₹{activityCostEstimate.toLocaleString()}
               </span>
             </div>
-            <div className="flex justify-between px-5 py-3 text-sm bg-brand-50">
-              <span className="font-semibold text-brand-900">Total</span>
-              <span className="font-semibold text-brand-700">
+            <div className="flex justify-between px-5 py-4 bg-brand-50">
+              <span className="font-bold text-brand-900 text-base">Total</span>
+              <span className="font-bold text-brand-700 text-base">
                 ₹{totalCost.toLocaleString()}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Contact info */}
-        <div className="mt-8 text-sm text-neutral-400">
-          Prepared for {input.contactName} · {input.contactPhone}
+        {/* Footer */}
+        <div className="mt-10 text-center">
+          <p className="text-sm text-neutral-400">
+            Prepared for {input.contactName} · {input.contactPhone}
+          </p>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <Link
+              to="/build"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition-colors shadow-md"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Plan another trip
+            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadPDF}
+              disabled={generating}
+              className="rounded-full"
+            >
+              {generating ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</>
+              ) : (
+                <><Download className="h-4 w-4" /> Save as PDF</>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -169,7 +169,7 @@ export default function Home() {
                   transition={{ delay: i * 0.08, duration: 0.5, ease: "easeOut" as const }}
                 >
                   <Link
-                    to="/build"
+                    to={`/build?destination=${dest.id}`}
                     className="group block rounded-2xl border border-neutral-100 bg-white overflow-hidden hover:shadow-md hover:border-brand-200 transition-all duration-300"
                   >
                     {/* Destination photo */}

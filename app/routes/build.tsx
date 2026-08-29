@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, redirect, useNavigation, useActionData, Link } from "react-router";
+import { Form, redirect, useNavigation, useActionData, Link, useSearchParams } from "react-router";
 import type { Route } from "./+types/build";
 import { destinations } from "~/lib/destinations";
 import { generateItinerary } from "~/lib/itinerary";
@@ -70,13 +70,16 @@ export async function action({ request, context }: Route.ActionArgs) {
 }
 
 export default function BuildPage() {
+  const [searchParams] = useSearchParams();
+  const preselectedDest = Number(searchParams.get("destination")) || 0;
+
   const [step, setStep] = useState(0);
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
 
   // Form state
-  const [destinationId, setDestinationId] = useState<number>(0);
+  const [destinationId, setDestinationId] = useState<number>(preselectedDest);
   const [tripType, setTripType] = useState<string>("group");
   const [travelStyle, setTravelStyle] = useState<string>("friends");
   const [travelers, setTravelers] = useState(2);

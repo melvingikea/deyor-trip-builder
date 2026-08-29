@@ -56,6 +56,8 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **Auto-compute rooms from travelers:** I requested that rooms automatically increase as the number of travelers goes up — 1 room per 2 people.
 
 - **Adults per room messing with rooms:** AI initially made changing "adults per room" also recalculate the room count. I pointed out that was wrong — only the traveler count should drive room calculation. Adults per room should be independent.
+
+- **Itinerary page not exciting:** I pointed out the itinerary page was flat and didn't invoke excitement for travel. It should make people want to travel. AI redesigned with a hero destination photo, timeline layout, and travel-inspired UI. PDF kept as-is since it's for reference.
 ## Session Timeline
 
 ### 1. Project Scaffolding

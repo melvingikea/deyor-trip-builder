@@ -20,53 +20,6 @@ import {
   Send,
   Loader2,
 } from "lucide-react";
-import { useEffect } from "react";
-
-/** Minimalist confetti burst — small colored dots that fall and fade */
-function Confetti({ onDone }: { onDone: () => void }) {
-  useEffect(() => {
-    const timer = setTimeout(onDone, 2500);
-    return () => clearTimeout(timer);
-  }, [onDone]);
-
-  const particles = Array.from({ length: 30 }, (_, i) => {
-    const colors = ["#e8464c", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
-    const color = colors[i % colors.length];
-    const left = 40 + Math.random() * 20;
-    const delay = Math.random() * 0.4;
-    const xDrift = (Math.random() - 0.5) * 200;
-    const size = 4 + Math.random() * 4;
-    const duration = 1.2 + Math.random() * 0.8;
-    return { color, left, delay, xDrift, size, duration, id: i };
-  });
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {particles.map((p) => (
-        <span
-          key={p.id}
-          className="absolute rounded-full"
-          style={{
-            left: `${p.left}%`,
-            top: "50%",
-            width: p.size,
-            height: p.size,
-            backgroundColor: p.color,
-            animation: `confetti-fall ${p.duration}s ease-out ${p.delay}s forwards`,
-            // @ts-expect-error CSS custom properties
-            "--x-drift": `${p.xDrift}px`,
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes confetti-fall {
-          0% { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
-          100% { opacity: 0; transform: translateY(300px) translateX(var(--x-drift)) scale(0.3) rotate(720deg); }
-        }
-      `}</style>
-    </div>
-  );
-}
 
 const STEPS = [
   { label: "Trip Basics", icon: MapPin },

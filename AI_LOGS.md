@@ -52,6 +52,10 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **Hero copy "step by step" discouraging:** I pointed out the heading "Build your perfect trip, step by step" makes it sound like a lot of work — users see "step by step" and think it's tedious. Changed to "Your next adventure, planned in minutes" to emphasize speed and excitement instead.
 
 - **Build page stepper too busy:** I pointed out the step counter, percentage, progress bar, and 5 icon circles with labels all together looked overwhelming — "too much to view and do." Simplified to just the current section name + a slim progress bar. Clean, travel-site feel.
+
+- **Auto-compute rooms from travelers:** I requested that rooms automatically increase as the number of travelers goes up — 1 room per 2 people.
+
+- **Adults per room messing with rooms:** AI initially made changing "adults per room" also recalculate the room count. I pointed out that was wrong — only the traveler count should drive room calculation. Adults per room should be independent.
 ## Session Timeline
 
 ### 1. Project Scaffolding

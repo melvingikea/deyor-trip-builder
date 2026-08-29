@@ -5,6 +5,7 @@ export function TravelBackground() {
   return (
     <div
       className="pointer-events-none absolute inset-0 overflow-hidden opacity-20"
+      style={{ zIndex: 0 }}
       aria-hidden="true"
     >
       <svg

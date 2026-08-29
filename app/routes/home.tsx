@@ -1,6 +1,36 @@
 import { Link } from "react-router";
+import type { Route } from "./+types/home";
 import { Button } from "~/components/ui/button";
 import { MapPin, Calendar, Download } from "lucide-react";
+
+export function meta(_args: Route.MetaArgs) {
+  return [
+    { title: "Deyor — Build Your Perfect Trip" },
+    {
+      name: "description",
+      content:
+        "Plan a personalized day-by-day travel itinerary with Deyor. Choose from curated destinations, pick your interests, and download a designed PDF itinerary.",
+    },
+    { property: "og:type", content: "website" },
+    { property: "og:title", content: "Deyor — Build Your Perfect Trip" },
+    {
+      property: "og:description",
+      content:
+        "Plan a personalized day-by-day travel itinerary. Choose from curated destinations, pick your interests, and download a designed PDF.",
+    },
+    { property: "og:url", content: "https://deyor-trip-builder.melvingeorge-me.workers.dev/" },
+    { property: "og:site_name", content: "Deyor" },
+    { property: "og:image", content: "https://deyor-trip-builder.melvingeorge-me.workers.dev/deyor-logo-white.png" },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "Deyor — Build Your Perfect Trip" },
+    {
+      name: "twitter:description",
+      content:
+        "Plan a personalized day-by-day travel itinerary with Deyor.",
+    },
+    { name: "robots", content: "index, follow" },
+  ];
+}
 
 export default function Home() {
   return (
@@ -8,9 +38,13 @@ export default function Home() {
       {/* Nav */}
       <nav className="border-b border-neutral-100">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <span className="text-sm font-semibold tracking-tight text-neutral-900">
-            deyor
-          </span>
+          <Link to="/" aria-label="Deyor home">
+            <img
+              src="/deyor-logo-white.png"
+              alt="Deyor"
+              className="h-5 brightness-0"
+            />
+          </Link>
           <Link to="/build">
             <Button size="sm">Build My Trip</Button>
           </Link>
@@ -25,8 +59,8 @@ export default function Home() {
           <span className="text-neutral-400">step by step.</span>
         </h1>
         <p className="mt-4 text-base text-neutral-500 leading-relaxed max-w-md">
-          Tell us what you love, how you travel, and when you want to go. 
-          We'll craft a personalized day-by-day itinerary you can download and share.
+          Tell us what you love, how you travel, and when you want to go.
+          We&apos;ll craft a personalized day-by-day itinerary you can download and share.
         </p>
         <div className="mt-8">
           <Link to="/build">

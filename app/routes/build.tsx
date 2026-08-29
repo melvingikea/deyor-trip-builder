@@ -29,6 +29,18 @@ const STEPS = [
   { label: "Review", icon: Send },
 ] as const;
 
+export function meta(_args: Route.MetaArgs) {
+  return [
+    { title: "Build My Trip — Deyor" },
+    {
+      name: "description",
+      content:
+        "Create your personalized travel itinerary in 5 easy steps. Choose a destination, pick your interests, and get a day-by-day plan.",
+    },
+    { name: "robots", content: "index, follow" },
+  ];
+}
+
 export async function action({ request, context }: Route.ActionArgs) {
 
   const formData = await request.formData();
@@ -108,8 +120,12 @@ export default function BuildPage() {
       {/* Nav */}
       <nav className="border-b border-neutral-100">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center">
-          <Link to="/" className="text-sm font-semibold tracking-tight text-neutral-900">
-            deyor
+          <Link to="/" aria-label="Deyor home">
+            <img
+              src="/deyor-logo-white.png"
+              alt="Deyor"
+              className="h-5 brightness-0"
+            />
           </Link>
         </div>
       </nav>

@@ -21,6 +21,20 @@ export async function loader({ params, context }: Route.LoaderArgs) {
   return { itinerary };
 }
 
+export function meta({ matches }: Route.MetaArgs) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const match = matches.find((m) => m && m.id === "routes/itinerary");
+  const dest = (match as Record<string, any>)?.loaderData?.itinerary?.destination?.name ?? "Your Trip";
+  return [
+    { title: `${dest} Itinerary — Deyor` },
+    {
+      name: "description",
+      content: `Your personalized day-by-day itinerary for ${dest}. View activities, cost breakdown, and download as PDF.`,
+    },
+    { name: "robots", content: "noindex, nofollow" },
+  ];
+}
+
 const interestEmoji: Record<string, string> = {
   adventure: "🧗",
   leisure: "🌴",
@@ -210,8 +224,12 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
       {/* Nav */}
       <nav className="border-b border-neutral-100">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <Link to="/" className="text-sm font-semibold tracking-tight text-neutral-900">
-            deyor
+          <Link to="/" aria-label="Deyor home">
+            <img
+              src="/deyor-logo-white.png"
+              alt="Deyor"
+              className="h-5 brightness-0"
+            />
           </Link>
           <Button size="sm" onClick={handleDownloadPDF} disabled={generating}>
             {generating ? (

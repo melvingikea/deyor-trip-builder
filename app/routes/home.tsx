@@ -3,7 +3,6 @@ import type { Route } from "./+types/home";
 import { Button } from "~/components/ui/button";
 import { MapPin, Calendar, Download } from "lucide-react";
 import { TravelBackground } from "~/components/travel-bg";
-import { AsciiSurfer } from "~/components/ascii-surfer";
 
 export function meta(_args: Route.MetaArgs) {
   return [
@@ -38,7 +37,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white relative">
       <TravelBackground />
-      <AsciiSurfer />
       {/* Nav */}
       <nav className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm relative z-10">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">

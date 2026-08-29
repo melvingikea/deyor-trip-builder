@@ -52,9 +52,10 @@ function durationToNights(range: TripInput["durationRange"]): number {
 /**
  * Distributes activities across days, matching selected interests.
  * - Filters activities by the traveler's chosen interests
- * - Spreads them evenly across days with no unnecessary repetition
- * - If there are fewer matching activities than days, cycles through them
- *   but ensures no day is empty
+ * - Shuffles and distributes so consecutive days always differ
+ * - Uses a "least recently used" approach: tracks how recently each
+ *   activity was scheduled and always picks the least-recent ones
+ * - First/last days get lighter schedules (1-2 activities)
  * - Assigns 2-3 activities per day when possible
  */
 export function generateItinerary(
@@ -69,29 +70,42 @@ export function generateItinerary(
     input.interests.includes(a.interest)
   );
 
-  // Fall back to all activities if none match (shouldn't happen with validation)
+  // Fall back to all activities if none match
   const pool =
     matchingActivities.length > 0 ? matchingActivities : destination.activities;
 
-  // Target 2-3 activities per day
-  const targetPerDay = Math.min(3, Math.max(2, Math.ceil(pool.length / totalDays)));
-
-  // Distribute activities across days using round-robin
-  // Shuffle the pool first for variety
+  // Shuffle pool for initial randomness
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
+  // Target 2-3 activities per day
+  const targetPerDay = Math.min(3, Math.max(2, Math.ceil(shuffled.length / totalDays)));
+
+  // Track when each activity was last used (lower = used longer ago)
+  const lastUsed = new Map<string, number>();
+  for (const a of shuffled) {
+    lastUsed.set(a.name, -1);
+  }
+
   const days: DayPlan[] = [];
-  let activityIndex = 0;
 
   for (let day = 1; day <= totalDays; day++) {
-    const dayActivities: Activity[] = [];
     const activitiesForDay = day === 1 || day === totalDays
       ? Math.min(2, targetPerDay) // lighter first/last day
       : targetPerDay;
 
-    for (let i = 0; i < activitiesForDay; i++) {
-      dayActivities.push(shuffled[activityIndex % shuffled.length]);
-      activityIndex++;
+    // Sort pool by least recently used, then pick top N
+    const sorted = [...shuffled].sort((a, b) => {
+      const aLast = lastUsed.get(a.name) ?? -1;
+      const bLast = lastUsed.get(b.name) ?? -1;
+      if (aLast !== bLast) return aLast - bLast;
+      // tie-break: randomize
+      return Math.random() - 0.5;
+    });
+
+    const dayActivities: Activity[] = [];
+    for (let i = 0; i < activitiesForDay && i < sorted.length; i++) {
+      dayActivities.push(sorted[i]);
+      lastUsed.set(sorted[i].name, day);
     }
 
     days.push({ day, activities: dayActivities });

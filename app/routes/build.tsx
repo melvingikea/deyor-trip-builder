@@ -257,7 +257,10 @@ export default function BuildPage() {
                 {
                   label: "Number of travelers",
                   value: travelers,
-                  set: setTravelers,
+                  set: (v: number) => {
+                    setTravelers(v);
+                    setRooms(Math.ceil(v / adultsPerRoom));
+                  },
                   min: 1,
                   max: 20,
                 },
@@ -271,7 +274,10 @@ export default function BuildPage() {
                 {
                   label: "Adults per room",
                   value: adultsPerRoom,
-                  set: setAdultsPerRoom,
+                  set: (v: number) => {
+                    setAdultsPerRoom(v);
+                    setRooms(Math.ceil(travelers / v));
+                  },
                   min: 1,
                   max: 4,
                 },

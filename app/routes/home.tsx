@@ -34,31 +34,26 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
-const destinationVibes: Record<string, { image: string; tagline: string; highlights: string[] }> = {
+const destinationVibes: Record<string, { image: string; tagline: string }> = {
   "Bali, Indonesia": {
     image: "/dest-bali.jpg",
     tagline: "Temples, rice terraces & beach clubs",
-    highlights: ["Sunrise trek at Mount Batur", "Ubud rice terrace walk", "Tanah Lot Temple visit"],
   },
   "Coorg, Karnataka": {
     image: "/dest-coorg.jpg",
     tagline: "Coffee hills & misty waterfalls",
-    highlights: ["Trek to Tadiandamol Peak", "Coffee plantation walk", "Abbey Falls visit"],
   },
   "Goa": {
     image: "/dest-goa.jpg",
     tagline: "Sun, sand & Old World charm",
-    highlights: ["Scuba diving at Grande Island", "Sunset cruise on the Mandovi", "Old Goa churches walk"],
   },
   "Manali, Himachal Pradesh": {
     image: "/dest-manali.jpg",
     tagline: "Snow peaks & valley adventures",
-    highlights: ["Solang Valley paragliding", "Old Manali café walk", "Hadimba Temple visit"],
   },
   "Jaipur, Rajasthan": {
     image: "/dest-jaipur.jpg",
     tagline: "Royal forts & vibrant bazaars",
-    highlights: ["Amber Fort elephant ride", "Hawa Mahal walk", "Johari Bazaar shopping"],
   },
 };
 
@@ -194,17 +189,15 @@ export default function Home() {
                         {vibe?.tagline ?? "Discover unique experiences"}
                       </p>
 
-                      {/* Sample activities */}
-                      {vibe && (
-                        <div className="mt-3 flex flex-col gap-1.5">
-                          {vibe.highlights.map((h) => (
-                            <span key={h} className="text-xs text-neutral-400 flex items-center gap-1.5">
-                              <span className="w-1 h-1 rounded-full bg-brand-300 shrink-0" />
-                              {h}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                      {/* Sample activities from actual data */}
+                      <div className="mt-3 flex flex-col gap-1.5">
+                        {dest.activities.slice(0, 3).map((a) => (
+                          <span key={a.name} className="text-xs text-neutral-400 flex items-center gap-1.5">
+                            <span className="w-1 h-1 rounded-full bg-brand-300 shrink-0" />
+                            {a.name}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </Link>
                 </motion.div>

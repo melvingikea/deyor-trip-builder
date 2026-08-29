@@ -483,6 +483,8 @@ export default function BuildPage() {
                     <Label htmlFor="contactName">Full name</Label>
                     <Input
                       id="contactName"
+                      name="name"
+                      autoComplete="name"
                       placeholder="John Doe"
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
@@ -492,6 +494,9 @@ export default function BuildPage() {
                     <Label htmlFor="contactPhone">Phone number</Label>
                     <Input
                       id="contactPhone"
+                      name="tel"
+                      type="tel"
+                      autoComplete="tel"
                       placeholder="+91 98765 43210"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}

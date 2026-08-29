@@ -48,7 +48,7 @@ npx wrangler kv namespace create ITINERARIES
 app/
 ├── lib/
 │   ├── destinations.ts   # 3 destinations with tagged activities
-│   ├── itinerary.ts      # Generation logic (interest filtering, round-robin, cost calc)
+│   ├── itinerary.ts      # Generation logic (interest filtering, LRU distribution, cost calc)
 │   ├── validation.ts     # Server-side input validation
 │   ├── store.ts          # KV-backed store with dev fallback
 │   └── cn.ts             # Tailwind merge utility
@@ -95,7 +95,7 @@ The AI initially set up the Cloudflare Workers deployment with `"assets": { "dir
 ## Assumptions
 
 - **Currency:** All prices are in INR (₹), as the destinations are India/SE Asia focused
-- **Activity cost:** Flat ₹1,500 per scheduled activity (simplified estimate)
+- **Activity cost:** Varies by interest type (adventure ₹2,500, culture ₹1,500, leisure ₹1,000, attractions ₹800 per person)
 - **No auth/database:** Itineraries are stored in KV with 7-day TTL, no user accounts
 - **PDF is client-side:** jsPDF generates the PDF in the browser because its ESM exports are incompatible with Cloudflare Workers' SSR bundling
 - **Flexible dates:** When "flexible" is checked, departure date is optional

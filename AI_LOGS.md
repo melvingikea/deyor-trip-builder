@@ -3,6 +3,24 @@
 ## Tool Used
 Hermes Agent (Nous Research) with Claude model via Copilot provider
 
+## Key Course Correction by Me
+
+The AI spent significant time trying to manually wire up the Cloudflare Workers deployment — writing custom `wrangler.jsonc` configs with `"assets"` fields, creating hand-rolled `worker-entry.js` wrappers, trying different `createRequestHandler` imports (`react-router` vs `@react-router/cloudflare`), and debugging a chain of 404 → 500 → "Invalid context" → "Cannot read properties of undefined (reading 'bind')" errors across multiple deploy attempts.
+
+After watching it go back and forth for a while, I stepped in and told it to just use the official scaffold command:
+
+```
+npm create cloudflare@latest -- my-react-router-app --framework=react-router
+```
+
+This generated the correct reference project in seconds. The AI then compared its broken config against the working template and found three things it had wrong:
+
+1. **`assets` field in `wrangler.jsonc`** — the official template doesn't have one; `@cloudflare/vite-plugin` handles assets internally
+2. **Missing `workers/app.ts` entry** — the official template has a thin `ExportedHandler` wrapper that the plugin bundles into the final worker
+3. **Env access pattern** — should use `import { env } from "cloudflare:workers"` instead of passing context through loaders
+
+The takeaway: when integrating with an opinionated framework plugin, start from the official template instead of trying to reverse-engineer the config from docs and error messages. The AI's general Cloudflare Workers knowledge was accurate but didn't match the specific integration contract that `@cloudflare/vite-plugin` expects.
+
 ## Session Timeline
 
 ### 1. Project Scaffolding

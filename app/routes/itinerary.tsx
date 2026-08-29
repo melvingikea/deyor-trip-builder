@@ -11,7 +11,7 @@ import {
   IndianRupee,
   Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function loader({ params, context }: Route.LoaderArgs) {
   const itinerary = await getItinerary(params.id);
@@ -46,6 +46,12 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
   const { itinerary } = loaderData;
   const { destination, days, input, totalNights, accommodationCost, activityCostEstimate, totalCost } = itinerary;
   const [generating, setGenerating] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowConfetti(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleDownloadPDF = async () => {
     setGenerating(true);
@@ -251,6 +257,42 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Confetti celebration */}
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+          {Array.from({ length: 40 }, (_, i) => {
+            const colors = ["#e8464c", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899"];
+            const color = colors[i % colors.length];
+            const left = 20 + Math.random() * 60;
+            const delay = Math.random() * 0.5;
+            const xDrift = (Math.random() - 0.5) * 300;
+            const size = 4 + Math.random() * 5;
+            const duration = 1.5 + Math.random() * 1;
+            return (
+              <span
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  left: `${left}%`,
+                  top: "30%",
+                  width: size,
+                  height: size,
+                  backgroundColor: color,
+                  animation: `confetti-burst ${duration}s ease-out ${delay}s forwards`,
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  ["--x-drift" as any]: `${xDrift}px`,
+                }}
+              />
+            );
+          })}
+          <style>{`
+            @keyframes confetti-burst {
+              0% { opacity: 1; transform: translateY(0) translateX(0) scale(1); }
+              100% { opacity: 0; transform: translateY(350px) translateX(var(--x-drift)) scale(0.2) rotate(720deg); }
+            }
+          `}</style>
+        </div>
+      )}
       {/* Nav */}
       <nav className="border-b border-neutral-100">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">

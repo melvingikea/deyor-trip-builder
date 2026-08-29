@@ -133,7 +133,6 @@ export default function BuildPage() {
   const [durationRange, setDurationRange] = useState<string>("");
   const [departureDate, setDepartureDate] = useState("");
   const [flexible, setFlexible] = useState(true);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [contactName, setContactName] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
@@ -610,7 +609,7 @@ export default function BuildPage() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button type="submit" disabled={!canProceed() || isSubmitting} onClick={() => setShowConfetti(true)}>
+              <Button type="submit" disabled={!canProceed() || isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -628,8 +627,6 @@ export default function BuildPage() {
         </Form>
       </div>
 
-      {/* Party popper confetti */}
-      {showConfetti && <Confetti onDone={() => setShowConfetti(false)} />}
     </div>
   );
 }

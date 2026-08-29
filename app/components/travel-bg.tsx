@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 
-/** Ultra-subtle animated travel background — thin lines & small shapes, well below content */
+/** Minimal floating clouds and a small compass — no lines, no routes */
 export function TravelBackground() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 overflow-hidden opacity-20"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
       style={{ zIndex: 0 }}
       aria-hidden="true"
     >
@@ -15,78 +15,66 @@ export function TravelBackground() {
         className="h-full w-full"
         preserveAspectRatio="xMidYMid slice"
       >
-        {/* Thin curved route */}
-        <motion.path
-          d="M-20 780 C300 650 500 700 720 550 C940 400 1100 420 1460 250"
-          stroke="currentColor"
-          className="text-brand-400"
-          strokeWidth="1.5"
-          strokeDasharray="6 12"
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 4, ease: "easeOut" }}
-        />
-
-        {/* Second thinner route */}
-        <motion.path
-          d="M1460 820 C1100 720 900 750 680 620 C460 490 300 510 -20 380"
-          stroke="currentColor"
-          className="text-brand-300"
-          strokeWidth="1"
-          strokeDasharray="4 16"
-          fill="none"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 5, ease: "easeOut", delay: 1 }}
-        />
-
-        {/* Small waypoint dots along routes */}
-        {[
-          { cx: 360, cy: 700, d: 2 },
-          { cx: 720, cy: 550, d: 2.8 },
-          { cx: 1050, cy: 430, d: 3.4 },
-          { cx: 900, cy: 730, d: 3 },
-          { cx: 500, cy: 520, d: 3.6 },
-        ].map((dot, i) => (
-          <motion.circle
-            key={i}
-            cx={dot.cx}
-            cy={dot.cy}
-            r="4"
-            fill="currentColor"
-            className="text-brand-400"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.6, delay: dot.d }}
-          />
-        ))}
-
-        {/* Tiny plane silhouette flying along first route */}
+        {/* Cloud 1 — top right, gentle drift */}
         <motion.g
-          initial={{ offsetDistance: "0%" }}
-          animate={{ offsetDistance: "100%" }}
-          transition={{ duration: 8, ease: "linear", delay: 1.5 }}
-          style={{ offsetPath: "path('M-20 780 C300 650 500 700 720 550 C940 400 1100 420 1460 250')" }}
+          animate={{ x: [0, 15, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          opacity={0.08}
         >
-          <polygon
-            points="0,-4 -10,2 -6,0 -10,4 0,1 10,4 6,0 10,2"
-            fill="currentColor"
-            className="text-brand-500"
-          />
+          <ellipse cx="1100" cy="100" rx="60" ry="20" fill="#94a3b8" />
+          <ellipse cx="1070" cy="92" rx="40" ry="16" fill="#94a3b8" />
+          <ellipse cx="1140" cy="95" rx="35" ry="14" fill="#94a3b8" />
         </motion.g>
 
-        {/* Small compass circle — bottom right */}
+        {/* Cloud 2 — top left, slower drift */}
         <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 2, delay: 2 }}
+          animate={{ x: [0, -12, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          opacity={0.06}
         >
-          <circle cx="1320" cy="780" r="20" stroke="currentColor" className="text-brand-300" strokeWidth="1" fill="none" />
-          <line x1="1320" y1="762" x2="1320" y2="768" stroke="currentColor" className="text-brand-400" strokeWidth="1" />
-          <line x1="1320" y1="792" x2="1320" y2="798" stroke="currentColor" className="text-brand-400" strokeWidth="1" />
-          <line x1="1302" y1="780" x2="1308" y2="780" stroke="currentColor" className="text-brand-400" strokeWidth="1" />
-          <line x1="1332" y1="780" x2="1338" y2="780" stroke="currentColor" className="text-brand-400" strokeWidth="1" />
+          <ellipse cx="250" cy="70" rx="50" ry="18" fill="#94a3b8" />
+          <ellipse cx="220" cy="62" rx="35" ry="14" fill="#94a3b8" />
+          <ellipse cx="285" cy="65" rx="30" ry="12" fill="#94a3b8" />
+        </motion.g>
+
+        {/* Cloud 3 — mid right, small */}
+        <motion.g
+          animate={{ x: [0, 10, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          opacity={0.05}
+        >
+          <ellipse cx="1250" cy="350" rx="40" ry="14" fill="#94a3b8" />
+          <ellipse cx="1225" cy="344" rx="28" ry="11" fill="#94a3b8" />
+          <ellipse cx="1278" cy="346" rx="24" ry="10" fill="#94a3b8" />
+        </motion.g>
+
+        {/* Cloud 4 — bottom left, tiny */}
+        <motion.g
+          animate={{ x: [0, -8, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+          opacity={0.05}
+        >
+          <ellipse cx="120" cy="650" rx="35" ry="12" fill="#94a3b8" />
+          <ellipse cx="100" cy="644" rx="22" ry="9" fill="#94a3b8" />
+          <ellipse cx="148" cy="646" rx="20" ry="8" fill="#94a3b8" />
+        </motion.g>
+
+        {/* Compass — bottom right, slow spin */}
+        <motion.g
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "1340px 800px" }}
+          opacity={0.1}
+        >
+          <circle cx="1340" cy="800" r="18" stroke="#94a3b8" strokeWidth="0.75" fill="none" />
+          <circle cx="1340" cy="800" r="14" stroke="#94a3b8" strokeWidth="0.4" fill="none" />
+          {/* N */}
+          <polygon points="1340,784 1337,793 1340,790 1343,793" fill="#94a3b8" />
+          {/* S */}
+          <polygon points="1340,816 1337,807 1340,810 1343,807" fill="#cbd5e1" />
+          {/* E/W ticks */}
+          <line x1="1324" y1="800" x2="1328" y2="800" stroke="#94a3b8" strokeWidth="0.6" />
+          <line x1="1352" y1="800" x2="1356" y2="800" stroke="#94a3b8" strokeWidth="0.6" />
         </motion.g>
       </svg>
     </div>

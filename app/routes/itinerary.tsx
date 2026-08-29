@@ -165,13 +165,14 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
           doc.setTextColor(60, 60, 60);
           const activityText = `•  ${activity.name}`;
           doc.text(activityText, margin + 10, y);
+          const activityWidth = doc.getTextWidth(activityText);
 
           // Tag with a space before it
           doc.setTextColor(R, G, B);
           doc.setFontSize(8);
           doc.setFont("helvetica", "italic");
           const tagText = activity.interest.charAt(0).toUpperCase() + activity.interest.slice(1);
-          doc.text(`  ${tagText}`, margin + 10 + doc.getTextWidth(activityText), y);
+          doc.text(`  ${tagText}`, margin + 10 + activityWidth, y);
           y += 6;
         }
         y += 4;

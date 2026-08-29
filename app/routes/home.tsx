@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Nav */}
-      <nav className="border-b border-neutral-100">
+      <nav className="border-b border-neutral-100 bg-white">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" aria-label="Deyor home">
             <img
@@ -53,16 +53,19 @@ export default function Home() {
 
       {/* Hero */}
       <main className="max-w-2xl mx-auto px-6 pt-24 pb-16">
-        <h1 className="text-4xl font-semibold tracking-tight text-neutral-900 leading-tight">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-50 border border-accent-400/30 text-accent-600 text-xs font-medium mb-6">
+          <span>✦</span> Community-led experiential travel
+        </div>
+        <h1 className="text-4xl font-semibold tracking-tight text-brand-950 leading-tight">
           Build your perfect trip,
           <br />
-          <span className="text-neutral-400">step by step.</span>
+          <span className="text-brand-500">step by step.</span>
         </h1>
         <p className="mt-4 text-base text-neutral-500 leading-relaxed max-w-md">
           Tell us what you love, how you travel, and when you want to go.
           We&apos;ll craft a personalized day-by-day itinerary you can download and share.
         </p>
-        <div className="mt-8">
+        <div className="mt-8 flex gap-3">
           <Link to="/build">
             <Button size="lg">
               Start planning
@@ -78,21 +81,24 @@ export default function Home() {
               icon: MapPin,
               title: "Curated destinations",
               desc: "Bali, Goa, Coorg, Manali, Jaipur — handpicked with real activities.",
+              color: "bg-brand-50 border-brand-100 text-brand-600",
             },
             {
               icon: Calendar,
               title: "Smart itinerary",
               desc: "Activities matched to your interests, distributed across your trip days.",
+              color: "bg-accent-50 border-accent-100 text-accent-600",
             },
             {
               icon: Download,
               title: "Download your plan",
               desc: "Get a designed PDF itinerary — ready to share or print.",
+              color: "bg-brand-50 border-brand-100 text-brand-600",
             },
           ].map((f) => (
             <div key={f.title} className="flex gap-4 items-start">
-              <div className="mt-0.5 h-8 w-8 rounded-lg bg-neutral-50 border border-neutral-100 flex items-center justify-center shrink-0">
-                <f.icon className="h-4 w-4 text-neutral-500" />
+              <div className={`mt-0.5 h-8 w-8 rounded-lg border flex items-center justify-center shrink-0 ${f.color}`}>
+                <f.icon className="h-4 w-4" />
               </div>
               <div>
                 <p className="text-sm font-medium text-neutral-900">{f.title}</p>

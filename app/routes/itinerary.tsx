@@ -246,7 +246,7 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
         <div className="mb-10">
           <Link
             to="/build"
-            className="inline-flex items-center gap-1 text-sm text-neutral-500 hover:text-neutral-700 mb-4"
+            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 mb-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Build another trip
@@ -269,9 +269,9 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
           ].map((item) => (
             <div
               key={item.label}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-neutral-100 bg-neutral-50 text-sm"
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-brand-100 bg-brand-50 text-sm"
             >
-              <item.icon className="h-4 w-4 text-neutral-400" />
+              <item.icon className="h-4 w-4 text-brand-500" />
               <span className="text-neutral-700 capitalize">{item.label}</span>
             </div>
           ))}
@@ -285,7 +285,7 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
               className="border border-neutral-100 rounded-xl px-5 py-4"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="h-7 w-7 rounded-full bg-neutral-900 text-white text-xs font-medium flex items-center justify-center">
+                <span className="h-7 w-7 rounded-full bg-brand-600 text-white text-xs font-medium flex items-center justify-center">
                   {day.day}
                 </span>
                 <span className="text-sm font-semibold text-neutral-900">
@@ -333,9 +333,9 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
                 ₹{activityCostEstimate.toLocaleString()}
               </span>
             </div>
-            <div className="flex justify-between px-5 py-3 text-sm bg-neutral-50">
-              <span className="font-semibold text-neutral-900">Total</span>
-              <span className="font-semibold text-neutral-900">
+            <div className="flex justify-between px-5 py-3 text-sm bg-brand-50">
+              <span className="font-semibold text-brand-900">Total</span>
+              <span className="font-semibold text-brand-700">
                 ₹{totalCost.toLocaleString()}
               </span>
             </div>

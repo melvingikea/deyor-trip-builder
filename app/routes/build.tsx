@@ -138,16 +138,16 @@ export default function BuildPage() {
               <div
                 className={cn(
                   "flex items-center gap-2 text-xs font-medium transition-colors",
-                  i <= step ? "text-neutral-900" : "text-neutral-300"
+                  i <= step ? "text-brand-700" : "text-neutral-300"
                 )}
               >
                 <div
                   className={cn(
                     "h-7 w-7 rounded-full flex items-center justify-center text-xs transition-all",
                     i < step
-                      ? "bg-neutral-900 text-white"
+                      ? "bg-brand-600 text-white"
                       : i === step
-                      ? "bg-neutral-900 text-white"
+                      ? "bg-brand-600 text-white"
                       : "bg-neutral-100 text-neutral-400"
                   )}
                 >
@@ -163,7 +163,7 @@ export default function BuildPage() {
                 <div
                   className={cn(
                     "flex-1 h-px mx-2",
-                    i < step ? "bg-neutral-900" : "bg-neutral-100"
+                    i < step ? "bg-brand-600" : "bg-neutral-100"
                   )}
                 />
               )}
@@ -211,7 +211,7 @@ export default function BuildPage() {
                       className={cn(
                         "flex items-center justify-between px-4 py-3 rounded-lg border text-left text-sm transition-all cursor-pointer",
                         destinationId === d.id
-                          ? "border-neutral-900 bg-neutral-50"
+                          ? "border-brand-600 bg-brand-50 ring-1 ring-brand-600"
                           : "border-neutral-200 hover:border-neutral-300"
                       )}
                     >
@@ -236,7 +236,7 @@ export default function BuildPage() {
                       className={cn(
                         "flex-1 px-4 py-2.5 rounded-lg border text-sm font-medium capitalize transition-all cursor-pointer",
                         tripType === t
-                          ? "border-neutral-900 bg-neutral-50 text-neutral-900"
+                          ? "border-brand-600 bg-brand-50 text-brand-700"
                           : "border-neutral-200 text-neutral-500 hover:border-neutral-300"
                       )}
                     >
@@ -257,7 +257,7 @@ export default function BuildPage() {
                       className={cn(
                         "px-4 py-2.5 rounded-lg border text-sm font-medium capitalize transition-all cursor-pointer",
                         travelStyle === s
-                          ? "border-neutral-900 bg-neutral-50 text-neutral-900"
+                          ? "border-brand-600 bg-brand-50 text-brand-700"
                           : "border-neutral-200 text-neutral-500 hover:border-neutral-300"
                       )}
                     >
@@ -356,7 +356,7 @@ export default function BuildPage() {
                     className={cn(
                       "flex flex-col items-center gap-2 px-4 py-6 rounded-xl border text-sm font-medium transition-all cursor-pointer",
                       interests.includes(item.value)
-                        ? "border-neutral-900 bg-neutral-50 text-neutral-900"
+                        ? "border-brand-600 bg-brand-50 text-brand-700 ring-1 ring-brand-600"
                         : "border-neutral-200 text-neutral-500 hover:border-neutral-300"
                     )}
                   >
@@ -396,7 +396,7 @@ export default function BuildPage() {
                       className={cn(
                         "px-4 py-3 rounded-lg border text-sm font-medium transition-all cursor-pointer",
                         durationRange === d.value
-                          ? "border-neutral-900 bg-neutral-50 text-neutral-900"
+                          ? "border-brand-600 bg-brand-50 text-brand-700"
                           : "border-neutral-200 text-neutral-500 hover:border-neutral-300"
                       )}
                     >
@@ -424,7 +424,7 @@ export default function BuildPage() {
                         setFlexible(e.target.checked);
                         if (e.target.checked) setDepartureDate("");
                       }}
-                      className="h-4 w-4 rounded border-neutral-300 accent-neutral-900"
+                      className="h-4 w-4 rounded border-neutral-300 accent-brand-600"
                     />
                     I'm flexible with dates
                   </label>

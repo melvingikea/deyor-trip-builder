@@ -3,25 +3,15 @@
 ## Tool Used
 Hermes Agent (Nous Research) with Claude model via Copilot provider
 
-## Key Course Correction by Me
+## Key Course Corrections by Me
 
-The AI spent significant time trying to manually wire up the Cloudflare Workers deployment — writing custom `wrangler.jsonc` configs with `"assets"` fields, creating hand-rolled `worker-entry.js` wrappers, trying different `createRequestHandler` imports (`react-router` vs `@react-router/cloudflare`), and debugging a chain of 404 → 500 → "Invalid context" → "Cannot read properties of undefined (reading 'bind')" errors across multiple deploy attempts.
+- **Cloudflare Workers deployment:** The AI spent significant time trying to manually wire up the deployment — writing custom `wrangler.jsonc` configs with `"assets"` fields, creating hand-rolled `worker-entry.js` wrappers, trying different `createRequestHandler` imports (`react-router` vs `@react-router/cloudflare`), and debugging a chain of 404 → 500 → "Invalid context" → "Cannot read properties of undefined (reading 'bind')" errors across multiple deploy attempts. I told it to just use `npm create cloudflare@latest -- my-react-router-app --framework=react-router` to scaffold a reference project. The AI compared its broken config against the working template and fixed three things: removed the `assets` field from `wrangler.jsonc`, added the proper `workers/app.ts` entry, and switched to `import { env } from "cloudflare:workers"` for env access.
 
-After watching it go back and forth for a while, I stepped in and told it to just use the official scaffold command:
+- **Workers KV for storage:** The AI initially used a `globalThis` in-memory Map to store itineraries, which loses data across Worker isolate requests in production — each request can hit a different isolate, so the saved itinerary would vanish by the time the redirect loaded it. I told it to use Workers KV, and it then set up the KV namespace and rewired the store module.
 
-```
-npm create cloudflare@latest -- my-react-router-app --framework=react-router
-```
+- **Deyor logo, favicon, and SEO:** The AI built the entire app with a plain text "deyor" in the nav, no favicon, and no meta tags. I told it to go to deyor.in, grab the actual logo and favicon, and make every page fully SEO-ready. It then extracted the white logo PNG, favicon SVG/PNG, and apple-touch-icon from deyor.in, added Open Graph + Twitter Card meta tags to the homepage, per-route `<title>` and `<meta description>` on all pages, and marked itinerary pages as `noindex` since they're ephemeral.
 
-This generated the correct reference project in seconds. The AI then compared its broken config against the working template and found three things it had wrong:
-
-1. **`assets` field in `wrangler.jsonc`** — the official template doesn't have one; `@cloudflare/vite-plugin` handles assets internally
-2. **Missing `workers/app.ts` entry** — the official template has a thin `ExportedHandler` wrapper that the plugin bundles into the final worker
-3. **Env access pattern** — should use `import { env } from "cloudflare:workers"` instead of passing context through loaders
-
-The takeaway: when integrating with an opinionated framework plugin, start from the official template instead of trying to reverse-engineer the config from docs and error messages. The AI's general Cloudflare Workers knowledge was accurate but didn't match the specific integration contract that `@cloudflare/vite-plugin` expects.
-
-Similarly, I had to tell the AI to use Workers KV for storing itinerary data. It initially used a `globalThis` in-memory Map, which loses data across Worker isolate requests in production — each request can hit a different isolate, so the saved itinerary would vanish by the time the redirect loaded it. I pointed out that KV was needed, and the AI then set up the KV namespace and rewired the store module.
+- **Travel color palette:** The AI initially used an all-neutral-gray palette (Resend-style). I pointed out that travel websites commonly use blue, white, and warm accents — it switched to a blue primary + amber accent palette. Then I corrected it again: Deyor actually uses a red theme (`rgb(232, 70, 76)`). It pulled the exact primary color from deyor.in's CSS variables and applied it across all buttons, active states, progress indicators, and highlights.
 
 ## Session Timeline
 

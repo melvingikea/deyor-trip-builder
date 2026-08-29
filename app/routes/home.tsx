@@ -34,29 +34,29 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
-const destinationVibes: Record<string, { emoji: string; tagline: string; highlights: string[] }> = {
+const destinationVibes: Record<string, { image: string; tagline: string; highlights: string[] }> = {
   "Bali, Indonesia": {
-    emoji: "🌺",
+    image: "/dest-bali.jpg",
     tagline: "Temples, rice terraces & beach clubs",
     highlights: ["Sunrise trek at Mount Batur", "Ubud rice terrace walk", "Tanah Lot Temple visit"],
   },
   "Coorg, Karnataka": {
-    emoji: "☕",
+    image: "/dest-coorg.jpg",
     tagline: "Coffee hills & misty waterfalls",
     highlights: ["Trek to Tadiandamol Peak", "Coffee plantation walk", "Abbey Falls visit"],
   },
   "Goa": {
-    emoji: "🏖️",
+    image: "/dest-goa.jpg",
     tagline: "Sun, sand & Old World charm",
     highlights: ["Scuba diving at Grande Island", "Sunset cruise on the Mandovi", "Old Goa churches walk"],
   },
   "Manali, Himachal Pradesh": {
-    emoji: "🏔️",
+    image: "/dest-manali.jpg",
     tagline: "Snow peaks & valley adventures",
     highlights: ["Solang Valley paragliding", "Old Manali café walk", "Hadimba Temple visit"],
   },
   "Jaipur, Rajasthan": {
-    emoji: "🏰",
+    image: "/dest-jaipur.jpg",
     tagline: "Royal forts & vibrant bazaars",
     highlights: ["Amber Fort elephant ride", "Hawa Mahal walk", "Johari Bazaar shopping"],
   },
@@ -172,12 +172,16 @@ export default function Home() {
                     to="/build"
                     className="group block rounded-2xl border border-neutral-100 bg-white overflow-hidden hover:shadow-md hover:border-brand-200 transition-all duration-300"
                   >
-                    {/* Colored header strip */}
-                    <div className="h-28 bg-gradient-to-br from-brand-50 to-brand-100 flex items-center justify-center relative overflow-hidden">
-                      <span className="text-5xl group-hover:scale-110 transition-transform duration-300">
-                        {vibe?.emoji ?? "🌍"}
-                      </span>
-                      <div className="absolute bottom-2 right-3 text-xs text-brand-400 font-medium">
+                    {/* Destination photo */}
+                    <div className="h-40 relative overflow-hidden">
+                      <img
+                        src={vibe?.image ?? "/dest-bali.jpg"}
+                        alt={dest.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                      <div className="absolute bottom-2 right-3 text-xs text-white/80 font-medium">
                         from ₹{dest.pricePerNight.toLocaleString()}/night
                       </div>
                     </div>

@@ -81,6 +81,9 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - Fix: added `html { overflow-y: scroll; }` to always show the scrollbar, preventing layout shift across page navigations
 - Also made build page nav consistent with home/itinerary navs (`justify-between`)
 
+- **User reported:** Input labels too close to input fields on the build page, "feels cheap"
+- Fix: added `mb-2 block` to the Label component for consistent spacing between labels and their inputs across all steps
+
 ## Bugs Encountered & Fixed
 
 ### Bug 1: jsPDF SSR Build Failure

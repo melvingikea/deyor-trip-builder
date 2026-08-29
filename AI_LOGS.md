@@ -50,6 +50,8 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **Progress bar & defaults:** I requested a progress bar starting at 25%, auto-selecting Friends/Leisure+Attractions/Flexible, and a party popper celebration.
 
 - **Hero copy "step by step" discouraging:** I pointed out the heading "Build your perfect trip, step by step" makes it sound like a lot of work — users see "step by step" and think it's tedious. Changed to "Your next adventure, planned in minutes" to emphasize speed and excitement instead.
+
+- **Build page stepper too busy:** I pointed out the step counter, percentage, progress bar, and 5 icon circles with labels all together looked overwhelming — "too much to view and do." Simplified to just the current section name + a slim progress bar. Clean, travel-site feel.
 ## Session Timeline
 
 ### 1. Project Scaffolding

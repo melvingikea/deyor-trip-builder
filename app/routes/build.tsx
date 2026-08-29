@@ -12,21 +12,16 @@ import { cn } from "~/lib/cn";
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
   MapPin,
-  Users,
-  Heart,
-  Calendar,
-  Send,
   Loader2,
 } from "lucide-react";
 
 const STEPS = [
-  { label: "Trip Basics", icon: MapPin },
-  { label: "Travelers", icon: Users },
-  { label: "Interests", icon: Heart },
-  { label: "Duration", icon: Calendar },
-  { label: "Review", icon: Send },
+  { label: "Trip Basics" },
+  { label: "Travelers" },
+  { label: "Interests" },
+  { label: "Duration" },
+  { label: "Review" },
 ] as const;
 
 export function meta(_args: Route.MetaArgs) {
@@ -134,58 +129,18 @@ export default function BuildPage() {
       </nav>
 
       <div className="max-w-xl mx-auto px-6 pt-10 pb-20">
-        {/* Progress bar — starts at 25%, fills to 100% by step 4 */}
-        <div className="mb-8">
-          <div className="flex justify-between text-xs text-neutral-400 mb-1.5">
-            <span>Step {step + 1} of 5</span>
-            <span>{Math.round(25 + step * 18.75)}%</span>
+        {/* Progress */}
+        <div className="mb-10">
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-lg font-semibold text-brand-950">{STEPS[step].label}</h2>
+            <span className="text-xs text-neutral-400">{step + 1} / 5</span>
           </div>
-          <div className="h-1.5 rounded-full bg-neutral-100 overflow-hidden">
+          <div className="h-1 rounded-full bg-neutral-100 overflow-hidden">
             <div
               className="h-full rounded-full bg-brand-500 transition-all duration-500 ease-out"
               style={{ width: `${25 + step * 18.75}%` }}
             />
           </div>
-        </div>
-
-        {/* Stepper */}
-        <div className="flex items-center gap-1 mb-10">
-          {STEPS.map((s, i) => (
-            <div key={s.label} className="flex items-center flex-1">
-              <div
-                className={cn(
-                  "flex items-center gap-2 text-xs font-medium transition-colors",
-                  i <= step ? "text-brand-700" : "text-neutral-300"
-                )}
-              >
-                <div
-                  className={cn(
-                    "h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-xs transition-all",
-                    i < step
-                      ? "bg-brand-600 text-white"
-                      : i === step
-                      ? "bg-brand-600 text-white"
-                      : "bg-neutral-100 text-neutral-400"
-                  )}
-                >
-                  {i < step ? (
-                    <Check className="h-3.5 w-3.5" />
-                  ) : (
-                    <s.icon className="h-3.5 w-3.5" />
-                  )}
-                </div>
-                <span className="hidden sm:inline whitespace-nowrap">{s.label}</span>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={cn(
-                    "flex-1 h-px mx-2",
-                    i < step ? "bg-brand-600" : "bg-neutral-100"
-                  )}
-                />
-              )}
-            </div>
-          ))}
         </div>
 
         <Form method="post">

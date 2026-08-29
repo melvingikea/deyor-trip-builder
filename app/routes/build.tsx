@@ -119,7 +119,7 @@ export default function BuildPage() {
     <div className="min-h-screen bg-white">
       {/* Nav */}
       <nav className="border-b border-neutral-100">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center">
+        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" aria-label="Deyor home">
             <img
               src="/deyor-logo-white.png"

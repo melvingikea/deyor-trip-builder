@@ -75,6 +75,12 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - Swapped entire brand palette to red (#E8464C family), kept amber accents
 - Updated theme-color meta to `#e8464c`
 
+### 10. UI Bug Fixes
+- **User reported:** Deyor logo shifts left when navigating from home to build page
+- Root cause: scrollbar appearing on the build page (longer content) caused a layout shift — the viewport width changes by ~15px when the scrollbar appears/disappears
+- Fix: added `html { overflow-y: scroll; }` to always show the scrollbar, preventing layout shift across page navigations
+- Also made build page nav consistent with home/itinerary navs (`justify-between`)
+
 ## Bugs Encountered & Fixed
 
 ### Bug 1: jsPDF SSR Build Failure

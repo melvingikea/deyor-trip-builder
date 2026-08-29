@@ -73,10 +73,10 @@ workers/
 Activities are distributed across days using a real algorithm (not hardcoded):
 
 1. Filter the destination's activities to match selected interests
-2. If fewer activities than days, include unmatched activities as fallback
-3. Round-robin distribute activities across days (2-3 per day depending on trip length)
-4. Anti-repetition: activities are never unnecessarily repeated — each appears at most once unless the trip is long enough to exhaust the pool
-5. Cost: `(price per night × nights) + (₹1,500 × total activities scheduled)`
+2. Shuffle the filtered pool for variety on each generation
+3. Use a **least-recently-used (LRU) approach**: each day picks the activities that were scheduled longest ago, so consecutive days always have different combinations
+4. First and last days get lighter schedules (1-2 activities); middle days get 2-3
+5. Cost: `(price per night × nights × rooms) + (per-activity cost × travelers)` — activity costs vary by interest type (adventure ₹2,500, culture ₹1,500, leisure ₹1,000, attractions ₹800)
 
 ## AI Tools Used
 

@@ -143,7 +143,7 @@ export default function BuildPage() {
               >
                 <div
                   className={cn(
-                    "h-7 w-7 rounded-full flex items-center justify-center text-xs transition-all",
+                    "h-7 w-7 shrink-0 rounded-full flex items-center justify-center text-xs transition-all",
                     i < step
                       ? "bg-brand-600 text-white"
                       : i === step
@@ -157,7 +157,7 @@ export default function BuildPage() {
                     <s.icon className="h-3.5 w-3.5" />
                   )}
                 </div>
-                <span className="hidden sm:inline">{s.label}</span>
+                <span className="hidden sm:inline whitespace-nowrap">{s.label}</span>
               </div>
               {i < STEPS.length - 1 && (
                 <div

@@ -88,6 +88,37 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - Added `TravelBackground` component with animated: dotted route paths, clouds, airplane flying along the route, map pins, compass, and scattered waypoints
 - All elements at low opacity (10-20%) so they don't compete with content
 - Nav gets `bg-white/80 backdrop-blur-sm` for a frosted glass effect over the background
+- **User corrected:** SVG was sitting on top of text (z-index issue) and too complex
+- Fixed z-index with inline `style={{ zIndex: 0 }}` (Tailwind `z-0` wasn't applying in v4)
+- **User corrected again:** still invisible at 7% opacity, then still overlapping at 20%
+- Root cause: `fixed inset-0 -z-10` was behind the `bg-white` on the page container
+- Final fix: `absolute inset-0` inside the relative parent, content elements get `relative z-10`
+- **User corrected again:** too many elements, not minimalist
+- Stripped down to just 4 small floating clouds (gentle drift animation) + 1 small slowly-spinning compass
+
+### 11. Build Page Stepper Fixes
+- **User reported:** "Trip Basics" label wraps to a second line, and the map icon circle stretches/loses its shape
+- Fix: added `whitespace-nowrap` on step labels, `shrink-0` on icon circle divs
+
+### 12. Contact Form Autocomplete
+- **User requested:** Full name and phone number fields should support browser autofill
+- Added `autoComplete="name"`, `name="name"` on the name field
+- Added `autoComplete="tel"`, `type="tel"`, `name="tel"` on the phone field
+
+### 13. PDF Redesign — Deyor Red Theme
+- **User requested:** PDF should use Deyor red color scheme and include the logo
+- Changed cover header from dark gray to Deyor red (#E8464C)
+- Embedded white Deyor logo PNG as base64 in the red header
+- Section headings ("Trip Overview", "Day-by-Day Itinerary", "Cost Estimate") in red
+- Day number circles in red
+- Interest tags in red italic with proper spacing
+- Cost box: clean rounded border with red accent top line (replaced ugly pink fill)
+- Footer text in brand red
+- **User reported:** activity interest tags overlapping activity names in PDF
+- Root cause: `getTextWidth()` was called after font size changed from 9pt to 8pt, measuring at wrong size
+- Fix: measure width immediately after drawing text, before changing font
+- **User reported:** cost estimate section looked bad — ₹ symbol broke (Helvetica doesn't support it), × caused letter-spacing issues
+- Fix: replaced ₹ with "Rs." and × with "x" for PDF compatibility; redesigned cost box with clean bordered layout
 
 ## Bugs Encountered & Fixed
 

@@ -178,52 +178,58 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
         y += 4;
       }
 
-      // Cost Summary box with red accent
-      checkPage(50);
-      y += 5;
+      // Cost Summary — clean bordered section
+      checkPage(55);
+      y += 8;
 
-      // Red top border on cost box
+      // Light border box
+      doc.setDrawColor(220, 220, 220);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(margin, y, contentWidth, 48, 2, 2, "S");
+
+      // Red accent line at top
       doc.setFillColor(R, G, B);
-      doc.rect(margin, y, contentWidth, 2, "F");
+      doc.rect(margin + 0.15, y + 0.15, contentWidth - 0.3, 1.5, "F");
 
-      doc.setFillColor(253, 245, 245);
-      doc.rect(margin, y + 2, contentWidth, 40, "F");
-
-      y += 12;
+      y += 10;
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(R, G, B);
-      doc.text("Cost Estimate", margin + 6, y);
-      y += 8;
+      doc.text("Cost Estimate", margin + 8, y);
+      y += 9;
 
       doc.setFontSize(9);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100, 100, 100);
       doc.text(
-        `Accommodation (${totalNights} nights × ${input.rooms} rooms × ₹${destination.pricePerNight.toLocaleString()})`,
-        margin + 6,
+        `Accommodation (${totalNights} nights x ${input.rooms} rooms x Rs.${destination.pricePerNight.toLocaleString()})`,
+        margin + 8,
         y
       );
       doc.setTextColor(23, 23, 23);
       doc.setFont("helvetica", "bold");
-      doc.text(`₹${accommodationCost.toLocaleString()}`, margin + contentWidth - 6, y, { align: "right" });
-      y += 6;
+      doc.text(`Rs.${accommodationCost.toLocaleString()}`, margin + contentWidth - 8, y, { align: "right" });
+      y += 7;
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100, 100, 100);
-      doc.text(`Activities estimate (${input.travelers} travelers)`, margin + 6, y);
+      doc.text(`Activities estimate (${input.travelers} travelers)`, margin + 8, y);
       doc.setTextColor(23, 23, 23);
       doc.setFont("helvetica", "bold");
-      doc.text(`₹${activityCostEstimate.toLocaleString()}`, margin + contentWidth - 6, y, { align: "right" });
-      y += 8;
+      doc.text(`Rs.${activityCostEstimate.toLocaleString()}`, margin + contentWidth - 8, y, { align: "right" });
+      y += 7;
 
-      doc.setDrawColor(R, G, B);
-      doc.setLineWidth(0.5);
-      doc.line(margin + 6, y - 2, margin + contentWidth - 6, y - 2);
+      // Divider
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.3);
+      doc.line(margin + 8, y, margin + contentWidth - 8, y);
+      y += 6;
+
       doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
       doc.setTextColor(R, G, B);
-      doc.text("Total", margin + 6, y + 3);
-      doc.text(`₹${totalCost.toLocaleString()}`, margin + contentWidth - 6, y + 3, { align: "right" });
+      doc.text("Total", margin + 8, y);
+      doc.text(`Rs.${totalCost.toLocaleString()}`, margin + contentWidth - 8, y, { align: "right" });
 
       // Footer on all pages
       const pageCount = doc.getNumberOfPages();
@@ -232,7 +238,7 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
         doc.setFontSize(8);
         doc.setFont("helvetica", "normal");
         doc.setTextColor(R, G, B);
-        doc.text("deyor — community-led experiential travel", margin, pageHeight - 10);
+        doc.text("deyor - community-led experiential travel", margin, pageHeight - 10);
         doc.setTextColor(180, 180, 180);
         doc.text(`Page ${i} of ${pageCount}`, pageWidth - margin, pageHeight - 10, { align: "right" });
       }

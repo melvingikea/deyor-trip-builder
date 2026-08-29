@@ -21,6 +21,8 @@ This generated the correct reference project in seconds. The AI then compared it
 
 The takeaway: when integrating with an opinionated framework plugin, start from the official template instead of trying to reverse-engineer the config from docs and error messages. The AI's general Cloudflare Workers knowledge was accurate but didn't match the specific integration contract that `@cloudflare/vite-plugin` expects.
 
+Similarly, I had to tell the AI to use Workers KV for storing itinerary data. It initially used a `globalThis` in-memory Map, which loses data across Worker isolate requests in production — each request can hit a different isolate, so the saved itinerary would vanish by the time the redirect loaded it. I pointed out that KV was needed, and the AI then set up the KV namespace and rewired the store module.
+
 ## Session Timeline
 
 ### 1. Project Scaffolding

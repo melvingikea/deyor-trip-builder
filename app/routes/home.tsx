@@ -103,9 +103,9 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl font-semibold tracking-tight text-brand-950 leading-tight"
           >
-            Build your perfect trip,
+            Your next adventure,
             <br />
-            <span className="text-brand-500">step by step.</span>
+            <span className="text-brand-500">planned in minutes.</span>
           </motion.h1>
 
           <motion.p
@@ -114,8 +114,8 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-5 text-base sm:text-lg text-neutral-500 leading-relaxed max-w-lg mx-auto"
           >
-            Tell us what you love, how you travel, and when you want to go.
-            We&apos;ll craft a personalized day-by-day itinerary you can download and share.
+            Pick a destination, choose your vibe, and we&apos;ll build a
+            personalized day-by-day itinerary you can download and share.
           </motion.p>
 
           <motion.div

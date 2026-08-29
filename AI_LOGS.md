@@ -48,6 +48,8 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **Destination auto-select:** I requested clicking a destination card on the homepage should auto-select that destination on the build page.
 
 - **Progress bar & defaults:** I requested a progress bar starting at 25%, auto-selecting Friends/Leisure+Attractions/Flexible, and a party popper celebration.
+
+- **Hero copy "step by step" discouraging:** I pointed out the heading "Build your perfect trip, step by step" makes it sound like a lot of work — users see "step by step" and think it's tedious. Changed to "Your next adventure, planned in minutes" to emphasize speed and excitement instead.
 ## Session Timeline
 
 ### 1. Project Scaffolding

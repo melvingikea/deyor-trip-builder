@@ -261,12 +261,18 @@ export default function ItineraryPage({ loaderData }: Route.ComponentProps) {
       {/* Confetti celebration */}
       {showConfetti && (
         <Confetti
-          numberOfPieces={200}
+          numberOfPieces={150}
           recycle={false}
           colors={["#e8464c", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#fbbf24"]}
-          gravity={0.3}
+          gravity={0.25}
+          confettiSource={{ x: 0, y: 0, w: typeof window !== "undefined" ? window.innerWidth : 1200, h: 0 }}
+          initialVelocityX={4}
+          initialVelocityY={15}
+          tweenDuration={100}
+          width={typeof window !== "undefined" ? window.innerWidth : 1200}
+          height={typeof window !== "undefined" ? window.innerHeight : 800}
           onConfettiComplete={() => setShowConfetti(false)}
-          style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", zIndex: 50 }}
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 50, pointerEvents: "none" }}
         />
       )}
       {/* Nav */}

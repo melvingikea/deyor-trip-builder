@@ -1,87 +1,113 @@
-# Welcome to React Router!
+# Deyor Trip Builder
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A guided "Build My Trip" wizard that collects travel preferences through a 5-step flow, generates a personalized day-by-day itinerary, and lets the user download it as a designed PDF.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+**Live:** [deyor-trip-builder.melvingeorge-me.workers.dev](https://deyor-trip-builder.melvingeorge-me.workers.dev)
 
-## Features
+## Tech Stack
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- **Frontend:** React 19, React Router v7 (framework mode, SSR), Tailwind CSS v4, shadcn/ui-style components
+- **Backend:** Cloudflare Workers (via `@cloudflare/vite-plugin`), Workers KV for itinerary storage
+- **PDF:** jsPDF (client-side, dynamically built from itinerary data)
+- **Testing:** Vitest (6 tests covering itinerary logic + validation)
 
-## Getting Started
-
-### Installation
-
-Install the dependencies:
+## Setup
 
 ```bash
+# Install dependencies
 npm install
-```
 
-### Development
+# Generate Cloudflare types + React Router route types
+npx wrangler types
+npx react-router typegen
 
-Start the development server with HMR:
-
-```bash
+# Start dev server
 npm run dev
+
+# Run tests
+npm test
+
+# Build + deploy
+npm run deploy
 ```
 
-Your application will be available at `http://localhost:5173`.
+### KV Namespace
 
-## Building for Production
+The app uses Cloudflare Workers KV to persist itineraries (7-day TTL). In dev mode, it falls back to an in-memory Map automatically.
 
-Create a production build:
+To create your own KV namespace:
 
 ```bash
-npm run build
+npx wrangler kv namespace create ITINERARIES
+# Update the id in wrangler.jsonc
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
+## Architecture
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+app/
+├── lib/
+│   ├── destinations.ts   # 5 destinations with tagged activities
+│   ├── itinerary.ts      # Generation logic (interest filtering, round-robin, cost calc)
+│   ├── validation.ts     # Server-side input validation
+│   ├── store.ts          # KV-backed store with dev fallback
+│   └── cn.ts             # Tailwind merge utility
+├── components/ui/        # Button, Input, Label (shadcn-style, no Radix)
+├── routes/
+│   ├── home.tsx          # Landing page
+│   ├── build.tsx         # 5-step wizard (client state + server action)
+│   └── itinerary.tsx     # Day-by-day display + PDF download
+workers/
+└── app.ts                # Cloudflare Worker entry point
 ```
 
-## Styling
+**Key design decisions:**
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+- **React Router actions/loaders** handle all server-side logic — no separate API layer. The wizard form submits to a server action that validates, generates the itinerary, stores it in KV, and redirects.
+- **Client-side state for wizard steps** — steps are managed with `useState` to avoid unnecessary round-trips, while the final submit goes through the server action.
+- **No Radix UI** — stripped to avoid SSR bundling issues on Cloudflare Workers. Components use CVA (class-variance-authority) for variant styling.
+- **`cloudflare:workers` module** — env bindings (KV) accessed via the official `cloudflare:workers` import, with try/catch fallback for dev.
 
----
+## Itinerary Logic
 
-Built with ❤️ using React Router.
+Activities are distributed across days using a real algorithm (not hardcoded):
+
+1. Filter the destination's activities to match selected interests
+2. If fewer activities than days, include unmatched activities as fallback
+3. Round-robin distribute activities across days (2-3 per day depending on trip length)
+4. Anti-repetition: activities are never unnecessarily repeated — each appears at most once unless the trip is long enough to exhaust the pool
+5. Cost: `(price per night × nights) + (₹1,500 × total activities scheduled)`
+
+## AI Tools Used
+
+**Tool:** Hermes Agent (Nous Research) with Claude model
+
+**Roughly how much was AI-generated:** ~85% of the code was AI-generated, with me directing architecture decisions, reviewing output, and fixing issues.
+
+**A specific bug the AI introduced and how I fixed it:**
+
+The AI initially set up the Cloudflare Workers deployment with `"assets": { "directory": "./build/client" }` in `wrangler.jsonc` alongside `@cloudflare/vite-plugin`. This caused the production deploy to return 404 — the wrangler config conflicted with the plugin's own asset handling. The server build at `build/server/index.js` also lacked a `default export` with a `fetch()` handler, causing wrangler to fall back to "service-worker" format which failed on Node.js imports.
+
+**How I found it:** `wrangler tail` showed the actual error: `"Invalid context value provided to handleRequest"` and later `"Cannot read properties of undefined (reading 'bind')"`. The deploy logs also warned about missing default export.
+
+**How I fixed it:** I scaffolded the official Cloudflare template via `npm create cloudflare -- --framework=react-router` and compared configs. The fix was: (1) remove the `assets` field from `wrangler.jsonc` entirely — the vite plugin handles assets, (2) add a `workers/app.ts` entry with the proper `ExportedHandler` pattern, (3) use `cloudflare:workers` module for env access instead of passing context through loaders. This is a case where the AI's general knowledge of Cloudflare Workers didn't match the specific integration pattern required by `@cloudflare/vite-plugin`.
+
+## Assumptions
+
+- **Currency:** All prices are in INR (₹), as the destinations are India/SE Asia focused
+- **Activity cost:** Flat ₹1,500 per scheduled activity (simplified estimate)
+- **No auth/database:** Itineraries are stored in KV with 7-day TTL, no user accounts
+- **PDF is client-side:** jsPDF generates the PDF in the browser because its ESM exports are incompatible with Cloudflare Workers' SSR bundling
+- **Flexible dates:** When "flexible" is checked, departure date is optional
+
+## Production Considerations
+
+1. **Authentication & authorization:** Add user accounts (Cloudflare Access or OAuth) so travelers can save, revisit, and share itineraries. Currently anyone with the itinerary URL can view it.
+
+2. **Persistent database:** Replace KV (which has a 7-day TTL and eventual consistency) with Cloudflare D1 (SQLite) or an external Postgres database. This enables querying itineraries, analytics on popular destinations, and reliable data retention.
+
+3. **Rate limiting & abuse prevention:** Add Cloudflare rate limiting rules to the `/build` action to prevent automated form spam. Add CSRF tokens to the form. Consider Turnstile (Cloudflare's CAPTCHA alternative) on the contact form.
+
+4. **Error tracking & observability:** Integrate Sentry or Cloudflare's built-in `tail_consumers` for error monitoring. Add structured logging for itinerary generation failures. The `observability.enabled` flag is already set in wrangler.jsonc.
+
+5. **CI/CD pipeline:** Set up GitHub Actions to run `npm test` + `npm run build` on PRs, and auto-deploy to Cloudflare on merge to main. Add preview deployments for branches.

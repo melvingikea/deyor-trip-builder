@@ -5,3 +5,7 @@
 # React Router
 /.react-router/
 /build/
+
+# Wrangler
+/.wrangler/
+worker-configuration.d.ts

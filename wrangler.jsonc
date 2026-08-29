@@ -1,0 +1,15 @@
+{
+  "name": "deyor-trip-builder",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2025-04-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "ITINERARIES",
+      "id": "bc960aa1c3464437ba53e9b98b463c57"
+    }
+  ]
+}

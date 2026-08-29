@@ -5,25 +5,34 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc"
+    "start": "wrangler dev",
+    "deploy": "npm run build && npx wrangler deploy",
+    "typecheck": "react-router typegen && tsc",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@react-router/node": "^8",
-    "@react-router/serve": "^8",
+    "@react-router/cloudflare": "^8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "isbot": "^5.1.36",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^0.510.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router": "^8"
+    "react-router": "^8",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1",
+    "@cloudflare/workers-types": "^5.20260829.1",
     "@react-router/dev": "^8",
     "@tailwindcss/vite": "^4.2.2",
-    "@types/node": "^22",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
-    "vite": "^8.0.3"
+    "vite": "^8.0.3",
+    "vitest": "^3.2.7",
+    "wrangler": "^4"
   }
 }

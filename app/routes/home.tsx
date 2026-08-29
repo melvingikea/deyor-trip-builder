@@ -47,14 +47,6 @@ const destinationVibes: Record<string, { image: string; tagline: string }> = {
     image: "/dest-goa.jpg",
     tagline: "Sun, sand & Old World charm",
   },
-  "Manali, Himachal Pradesh": {
-    image: "/dest-manali.jpg",
-    tagline: "Snow peaks & valley adventures",
-  },
-  "Jaipur, Rajasthan": {
-    image: "/dest-jaipur.jpg",
-    tagline: "Royal forts & vibrant bazaars",
-  },
 };
 
 const experiences = [

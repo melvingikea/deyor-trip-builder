@@ -51,33 +51,6 @@ export const destinations: Destination[] = [
       { name: "Beach hopping — Anjuna to Vagator", interest: "leisure" },
     ],
   },
-  {
-    id: 4,
-    name: "Manali, Himachal Pradesh",
-    pricePerNight: 3000,
-    activities: [
-      { name: "Solang Valley paragliding", interest: "adventure" },
-      { name: "Rohtang Pass snow trek", interest: "adventure" },
-      { name: "Old Manali café walk", interest: "leisure" },
-      { name: "Hot springs at Vashisht", interest: "leisure" },
-      { name: "Hadimba Devi Temple visit", interest: "culture" },
-      { name: "Great Himalayan National Park trek", interest: "adventure" },
-      { name: "Mall Road evening stroll", interest: "attractions" },
-    ],
-  },
-  {
-    id: 5,
-    name: "Jaipur, Rajasthan",
-    pricePerNight: 4000,
-    activities: [
-      { name: "Hot air balloon ride over Amber Fort", interest: "adventure" },
-      { name: "Hawa Mahal photo walk", interest: "attractions" },
-      { name: "Block printing workshop", interest: "culture" },
-      { name: "Royal cuisine cooking class", interest: "culture" },
-      { name: "Nahargarh Fort sunset", interest: "leisure" },
-      { name: "Jal Mahal lake visit", interest: "leisure" },
-    ],
-  },
 ];
 
 export function getDestination(id: number): Destination | undefined {

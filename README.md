@@ -47,7 +47,7 @@ npx wrangler kv namespace create ITINERARIES
 ```
 app/
 ├── lib/
-│   ├── destinations.ts   # 5 destinations with tagged activities
+│   ├── destinations.ts   # 3 destinations with tagged activities
 │   ├── itinerary.ts      # Generation logic (interest filtering, round-robin, cost calc)
 │   ├── validation.ts     # Server-side input validation
 │   ├── store.ts          # KV-backed store with dev fallback

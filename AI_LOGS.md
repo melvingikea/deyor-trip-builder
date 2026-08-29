@@ -3,16 +3,6 @@
 ## Tool Used
 Hermes Agent (Nous Research) with Claude model via Copilot provider
 
-## Key Course Corrections by Me
-
-- **Cloudflare Workers deployment:** The AI spent significant time trying to manually wire up the deployment — writing custom `wrangler.jsonc` configs with `"assets"` fields, creating hand-rolled `worker-entry.js` wrappers, trying different `createRequestHandler` imports (`react-router` vs `@react-router/cloudflare`), and debugging a chain of 404 → 500 → "Invalid context" → "Cannot read properties of undefined (reading 'bind')" errors across multiple deploy attempts. I told it to just use `npm create cloudflare@latest -- my-react-router-app --framework=react-router` to scaffold a reference project. The AI compared its broken config against the working template and fixed three things: removed the `assets` field from `wrangler.jsonc`, added the proper `workers/app.ts` entry, and switched to `import { env } from "cloudflare:workers"` for env access.
-
-- **Workers KV for storage:** The AI initially used a `globalThis` in-memory Map to store itineraries, which loses data across Worker isolate requests in production — each request can hit a different isolate, so the saved itinerary would vanish by the time the redirect loaded it. I told it to use Workers KV, and it then set up the KV namespace and rewired the store module.
-
-- **Deyor logo, favicon, and SEO:** The AI built the entire app with a plain text "deyor" in the nav, no favicon, and no meta tags. I told it to go to deyor.in, grab the actual logo and favicon, and make every page fully SEO-ready. It then extracted the white logo PNG, favicon SVG/PNG, and apple-touch-icon from deyor.in, added Open Graph + Twitter Card meta tags to the homepage, per-route `<title>` and `<meta description>` on all pages, and marked itinerary pages as `noindex` since they're ephemeral.
-
-- **Travel color palette:** The AI initially used an all-neutral-gray palette (Resend-style). I pointed out that travel websites commonly use blue, white, and warm accents — it switched to a blue primary + amber accent palette. Then I corrected it again: Deyor actually uses a red theme (`rgb(232, 70, 76)`). It pulled the exact primary color from deyor.in's CSS variables and applied it across all buttons, active states, progress indicators, and highlights.
-
 ## Session Timeline
 
 ### 1. Project Scaffolding
@@ -132,88 +122,79 @@ Hermes Agent (Nous Research) with Claude model via Copilot provider
 - **Root cause:** Radix UI packages have SSR-incompatible module resolution for Workers
 - **Fix:** Removed all Radix UI dependencies; wrote plain HTML components with CVA styling
 
-### Bug 3: Context Undefined in Dev
-- **What happened:** `TypeError: Cannot read properties of undefined (reading 'env')` when accessing `context.cloudflare.env.ITINERARIES`
-- **Root cause:** `context.cloudflare` is undefined in `react-router dev` (only available in wrangler dev)
-- **Fix:** Added try/catch fallback to in-memory Map store when KV is unavailable
-
-### Bug 4: Production Deploy 404/500 (Major)
-- **What happened:** Deployed worker returned 404, then after fixes returned 500 with various errors
-- **Root cause:** Multiple issues:
-  1. `"assets": { "directory": "./build/client" }` in wrangler.jsonc conflicted with `@cloudflare/vite-plugin`'s own asset handling
-  2. `build/server/index.js` (React Router SSR build) has no `default export` with `fetch()` — wrangler fell back to "service-worker" format which failed on Node.js imports
-  3. Using `createRequestHandler` from wrong package (`react-router` vs `@react-router/cloudflare`)
-- **How found:** `wrangler tail --format json` showed the actual error messages
-- **Fix:** Scaffolded official Cloudflare template via `npm create cloudflare -- --framework=react-router`, compared configs, and adopted the correct pattern:
-  - Removed `assets` field from wrangler.jsonc (plugin handles it)
-  - Added `workers/app.ts` with proper `ExportedHandler` pattern
-  - Used `cloudflare:workers` module for env access
-  - Set `main: "./workers/app.ts"` in wrangler.jsonc
-
-### Bug 5: Dropbox Sync Conflicts
+### Bug 3: Dropbox Sync Conflicts
 - **What happened:** `.react-router/types` directory caused ENOTEMPTY/ENOTDIR errors during dev server restarts
 - **Root cause:** Dropbox syncing the generated types directory caused file conflicts
 - **Fix:** `rm -rf .react-router` before restarting dev server; added to .gitignore
 
-### Bug 6: Path Alias Resolution
+### Bug 4: Path Alias Resolution
 - **What happened:** `Cannot find module '~/components/ui/button'` at runtime
 - **Root cause:** Missing `tsconfigPaths` in vite.config.ts `resolve` option
 - **Fix:** Added `resolve: { tsconfigPaths: true }` to vite config
 
-### 14. Official Deyor Logo for PDF
-- **User reported:** PDF logo wasn't the real Deyor logo
-- Downloaded official white logo from `deyor.in` (`deyor_white_logo_png.png` via CDN)
-- Re-encoded as base64 and replaced the old embedded logo in itinerary.tsx
-- Also updated `public/deyor-logo-white.png` with the official version
+### Bug 5: Tailwind v4 z-index Not Applying
+- **What happened:** SVG background elements overlapped page text despite having `z-0` class
+- **Root cause:** Tailwind v4 `z-0` computed as `auto` instead of `0`
+- **Fix:** Used inline `style={{ zIndex: 0 }}` instead of Tailwind class
 
-### 15. Homepage Redesign — Travel-First, Not SaaS
-- **User reported:** homepage was bland with no animation/SVG
-- Added animated gradient blobs (red/amber), dotted travel route path with airplane, location pins, clouds, compass, mountains, sun — all subtle with framer-motion
-- Added 6 feature cards in a 3×2 grid with staggered entrance animations
-- Centered hero with fade-up animations on badge, heading, subtitle, CTA
-- **User corrected:** feature cards looked like a SaaS website, not a travel website
-- Replaced SaaS-style icon+title+desc cards with:
-  - **Destination cards** showing real Unsplash photos, taglines, and actual activity names from destinations data
-  - **Experience type pills** (Adventure 🧗, Leisure 🌴, Culture 🏛️, Attractions 📸)
-  - **"How it works"** numbered flow (01–05) describing the travel planning journey
-  - Second CTA at bottom
+### Bug 6: PDF getTextWidth at Wrong Font Size
+- **What happened:** Activity interest tags overlapped activity names in PDF
+- **Root cause:** `getTextWidth()` was called after font size changed from 9pt to 8pt, measuring at wrong size
+- **Fix:** Measure width immediately after drawing text at 9pt, before switching to 8pt
 
-### 16. Destination Images
-- Downloaded real photos from Unsplash for each destination (Bali, Coorg, Goa)
-- Cards show photo with gradient overlay, price badge, destination name, tagline, and 3 sample activities pulled directly from `destinations.ts`
-- **User corrected:** activity names on cards were hardcoded/invented — changed to pull directly from `dest.activities.slice(0, 3)`
+### Bug 7: PDF Unicode Characters Breaking
+- **What happened:** ₹ symbol and × character rendered as broken glyphs with letter-spacing issues
+- **Root cause:** jsPDF default Helvetica font doesn't support Unicode characters
+- **Fix:** Replaced ₹ with "Rs." and × with "x" throughout PDF cost section
 
-### 17. Build Page — Progress Bar, Defaults & Confetti
-- **User requested:** minimalist progress bar starting at 25%
-- Added thin progress bar above stepper: shows "Step X of 5" with percentage (25% → 100%), smooth CSS transition
-- **User requested:** auto-select Friends travel style, Leisure + Attractions interests, "I'm flexible with dates"
-- Set defaults: `travelStyle="friends"`, `interests=["leisure", "attractions"]`, `flexible=true`
-- **User requested:** party popper celebration on generating itinerary
-- Initially added custom CSS confetti in build.tsx — didn't work well
-- **User corrected:** confetti should be on itinerary page, not build page
-- Moved to itinerary.tsx, fires on page load
-- **User corrected:** use `react-confetti` npm package instead of custom
-- Installed `react-confetti`, replaced custom implementation
-- **User corrected:** confetti pieces too big → reduced count to 150, gentler gravity
-- **User corrected:** confetti only on left side → SSR was using hardcoded 1200px width; added client-side `useEffect` to measure actual `window.innerWidth/innerHeight` with resize listener
+### Bug 8: Confetti Only Rendering on Left Side
+- **What happened:** `react-confetti` particles only appeared on the left portion of the screen
+- **Root cause:** SSR rendered with hardcoded 1200px width; client window was wider
+- **Fix:** Added `useEffect` to measure actual `window.innerWidth/innerHeight` with resize listener
 
-### 18. Destination Auto-Select from Homepage
-- **User requested:** clicking a destination card on homepage should auto-select that destination on the build page
-- Homepage cards now link to `/build?destination={id}` instead of `/build`
-- Build page reads `useSearchParams().get("destination")` to set initial `destinationId`
+## Key Course Corrections by Me
 
-### 19. Data Compliance — Spec-Only Destinations
-- **User corrected:** use only the 3 destinations from the spec (Bali, Coorg, Goa), not 5
-- Removed Manali and Jaipur from `destinations.ts`, homepage vibes, and deleted their images
-- Updated README to say "3 destinations"
+- **Cloudflare Workers deployment:** The AI spent significant time trying to manually wire up the deployment — writing custom `wrangler.jsonc` configs with `"assets"` fields, creating hand-rolled `worker-entry.js` wrappers, trying different `createRequestHandler` imports, and debugging a chain of 404 → 500 → "Invalid context" → "Cannot read properties of undefined" errors across multiple deploy attempts. I told it to just use `npm create cloudflare@latest -- --framework=react-router` to scaffold a reference project. The AI compared its broken config against the working template and fixed three things: removed the `assets` field, added the proper `workers/app.ts` entry, and switched to `import { env } from "cloudflare:workers"`.
 
-## Additional Course Corrections by Me
+- **Workers KV for storage:** The AI initially used a `globalThis` in-memory Map to store itineraries, which loses data across Worker isolate requests in production. I told it to use Workers KV, and it then set up the KV namespace and rewired the store module.
 
-- **Don't add more activities:** User explicitly said not to add more activities to fix the repetition bug — fix the distribution algorithm instead, don't expand the dataset
-- **ASCII surfer rejected:** Added ASCII surfer animation to homepage — user said remove it, add something else
-- **Confetti location:** Initially added confetti to build page on button click — user said it should be on the itinerary page so it's visible after generation
-- **Confetti library:** Custom CSS confetti was too big/broken — user directed to use `react-confetti` package
-- **SaaS → Travel design:** Feature cards with icons looked like a SaaS landing page — user corrected to make it look like a travel website with real destination photos
-- **Hardcoded activity names:** Homepage cards had invented activity names that didn't match `destinations.ts` — user corrected to use only actual data
-- **3 destinations only:** Had expanded to 5 destinations (added Manali, Jaipur) — user corrected to stick to the 3 in the spec
+- **Deyor logo, favicon, and SEO:** The AI built the entire app with plain text "deyor" in the nav, no favicon, and no meta tags. I told it to go to deyor.in, grab the actual logo and favicon, and make every page SEO-ready. It then extracted the assets and added Open Graph + Twitter Card meta tags.
+
+- **Color palette — twice:** The AI initially used an all-neutral-gray palette. I pointed out travel sites use blue/warm accents — it switched to blue. Then I corrected it again: Deyor actually uses a red theme (`rgb(232, 70, 76)`). It pulled the exact primary from deyor.in and applied it everywhere.
+
+- **Logo shift between pages:** I reported the Deyor logo shifting left when navigating from home to build page. AI found scrollbar layout shift as root cause.
+
+- **Input label spacing:** I reported input labels were too close to inputs, "feels cheap". AI added `mb-2 block` to Label component.
+
+- **SVG background — multiple rounds:** I requested a minimalist animated travel background. AI added one that sat on top of text (z-index broken), was invisible (opacity too low), then too complex. I corrected it each time until we got just floating clouds + compass.
+
+- **Stepper label wrapping:** I reported "Trip Basics" wrapping to next line and the icon circle stretching. AI added `whitespace-nowrap` and `shrink-0`.
+
+- **Contact form autocomplete:** I requested browser autofill support for name and phone fields.
+
+- **PDF redesign with Deyor branding:** I requested the PDF use Deyor red theme and include the actual logo. I also reported the activity tag overlap and the broken cost section.
+
+- **Official Deyor logo:** I reported the PDF logo wasn't the real Deyor logo. AI downloaded the official one from deyor.in CDN.
+
+- **Don't add more activities:** AI tried to fix the activity repetition bug by adding more activities to the dataset. I explicitly said no — fix the distribution algorithm instead, don't expand the data.
+
+- **ASCII surfer rejected:** AI added an ASCII surfer animation to the homepage. I said remove it and add something else.
+
+- **SaaS → Travel design:** AI built the homepage with SaaS-style icon+title+description feature cards. I corrected it — this is a travel website, not a SaaS product. It redesigned with destination photo cards, experience pills, and a "how it works" flow.
+
+- **Real destination images:** I requested real photos for each destination instead of emoji/gradient placeholders.
+
+- **Hardcoded activity names:** Homepage destination cards had invented activity names that didn't match `destinations.ts`. I corrected it to use only actual data from the source.
+
+- **Confetti location:** AI added confetti to the build page on button click — I said it should be on the itinerary page so it's visible after generation.
+
+- **Confetti library:** Custom CSS confetti was too big/broken. I directed it to use the `react-confetti` npm package.
+
+- **Confetti sizing:** Confetti pieces were too big, then only appeared on the left side. I corrected both issues.
+
+- **3 destinations only:** AI had expanded to 5 destinations (added Manali, Jaipur). I corrected it to stick to the 3 in the spec (Bali, Coorg, Goa).
+
+- **Destination auto-select:** I requested clicking a destination card on the homepage should auto-select that destination on the build page.
+
+- **Progress bar & defaults:** I requested a progress bar starting at 25%, auto-selecting Friends/Leisure+Attractions/Flexible, and a party popper celebration.
 
